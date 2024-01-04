@@ -8,11 +8,14 @@
 		:size="'80%'"
 		direction="ttb">
 		<div class="drawer">
+      <start v-if="opt==='start'"></start>
+      <setting v-else-if="opt==='setting'"></setting>
+      <info v-else-if="opt === 'info'"></info>
 		</div>
 	</el-drawer>
 	<div class="main">
 		<div class="bottom-nav">
-			<div class="nav-item" @click="drawer = true">
+			<div class="nav-item" @click="drawer = true; opt='start';">
 				<svg t="1704165993478" class="icon" viewBox="0 0 1024 1024" version="1.1"
 					xmlns="http://www.w3.org/2000/svg" p-id="5923" width="200" height="200">
 					<path
@@ -20,7 +23,7 @@
 						fill="#1296db" p-id="5924"></path>
 				</svg>
 			</div>
-			<div class="nav-item" @click="drawer = true">
+			<div class="nav-item" @click="drawer = true; opt='setting';">
 				<svg t="1704166457026" class="icon" viewBox="0 0 1024 1024" version="1.1"
 					xmlns="http://www.w3.org/2000/svg" p-id="7093" width="200" height="200">
 					<path
@@ -28,7 +31,7 @@
 						p-id="7094" fill="#bfbfbf"></path>
 				</svg>
 			</div>
-			<div class="nav-item" @click="drawer = true">
+			<div class="nav-item" @click="drawer = true; opt='info';">
 				<svg t="1704166513250" class="icon" viewBox="0 0 1041 1024" version="1.1"
 					xmlns="http://www.w3.org/2000/svg" p-id="8356" width="200" height="200">
 					<path
@@ -49,8 +52,14 @@
 		ElDrawer,
 		ElMessageBox
 	} from 'element-plus'
+  import info from './info.vue'
+  import start from './start.vue'
+  import setting from './setting.vue'
 
 	const drawer = ref(false)
+  const opts = ['info', 'start', 'setting']
+  const opt = ref('')
+
 </script>
 
 <style>

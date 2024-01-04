@@ -1,12 +1,44 @@
 <script setup>
-	import Right from './components/Right.vue'
-	import Nav from './components/Nav.vue'
+import { ref, onMounted, onBeforeMount } from "vue";
+import Right from './components/Right.vue'
+import Nav from './components/Nav.vue'
+import { ElNotification, ElLoading } from "element-plus";
+const fullscreenLoading = ref(true)  // 全屏加载
+
+var loading = null
+var startTime = 0
+var timer = null
+onBeforeMount(() => {
+  loading = ElLoading.service({
+    lock: true,
+    text: 'Loading',
+    background: 'rgba(0, 0, 0, 0.7)',
+  })
+  timer = setInterval(() => {
+    startTime++
+  }, 1)
+})
+
+
+onMounted(() => {
+
+  setTimeout(()=> {
+    loading.close()
+    clearInterval(timer)
+    ElNotification({
+      title: '系统提示',
+      message: `本次开机用时：${startTime}ms`,
+      type: 'success',
+    })
+  }, 500)
+})
+
 
 </script>
 
 <template>
 
-	<el-watermark :font="font" :content="['左手文件系统']">
+<!--	<el-watermark :font="font" :content="['左手文件系统']">-->
 
 
 		<div class="header">
@@ -24,7 +56,7 @@
       <div class="fixed-bottom"><Nav></Nav></div>
     </el-row>
 
-	</el-watermark>
+<!--	</el-watermark>-->
 </template>
 
 <style>
@@ -43,13 +75,8 @@
     text-align: center;
 
   }
-	/*.main {*/
-	/*	display: flex;*/
-	/*	margin: 20px;*/
-	/*}*/
 
 	.header {
-		/*background-color: #3a7bd5;*/
 		height: 60px;
 		display: flex;
 		align-items: center;
