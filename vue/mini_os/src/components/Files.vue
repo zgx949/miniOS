@@ -1,5 +1,5 @@
 <template>
-	<div class="left">
+	<div class="files">
 		<div>
 			<h2 style="text-align: center;margin: 10px;">文件系统</h2>
 		</div>
@@ -53,11 +53,9 @@
 					<el-input v-model="search" size="small" placeholder="搜索文件(夹)" />
 				</template>
 				<template #default="scope">
-					<!-- <el-button size="small" @click="handleEdit(scope.$index, scope.row)">打开</el-button> -->
-					<el-button size="small" type="success" @click="handleDelete(scope.$index, scope.row)">下载</el-button>
+					<el-button size="small" type="success" @click="handleDelete(scope.$index, scope.row)">分享</el-button>
+					<el-button size="small" type="primary" @click="handleDelete(scope.$index, scope.row)">下载</el-button>
 					<el-button size="small" type="danger" @click="handleDelete(scope.$index, scope.row)">删除</el-button>
-					<!-- <el-button size="small" type="danger" @click="handleDelete(scope.$index, scope.row)">复制</el-button> -->
-					
 				</template>
 			</el-table-column>
 		</el-table>
@@ -451,7 +449,7 @@ const open = (index, row) => {
 		background-color: #f2f2f2;
 	}
 
-	.left {
+	.files {
 		/* width: 50%; */
 		background-color: #ffffff;
 		padding: 20px;

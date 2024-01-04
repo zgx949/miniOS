@@ -1,22 +1,11 @@
 <script setup>
-	// This starter template is using Vue 3 <script setup> SFCs
-	// Check out https://v3.vuejs.org/api/sfc-script-setup.html#sfc-script-setup
-	import HelloWorld from './components/HelloWorld.vue'
-	import Left from './components/Left.vue'
 	import Right from './components/Right.vue'
 	import Nav from './components/Nav.vue'
-	import {
-		ElMessage,
-		ElMessageBox
-	} from 'element-plus'
-	import {
-		ref
-	} from 'vue'
+
 </script>
 
 <template>
-	<!-- <img alt="Vue logo" src="./assets/logo.png" />
-  <HelloWorld msg="Hello Vue 3 + Vite" /> -->
+
 	<el-watermark :font="font" :content="['左手文件系统']">
 
 
@@ -25,27 +14,16 @@
 		</div>
 
 		<el-row :gutter="10">
-			<el-col :xs="24" :sm="24" :md="12" :lg="12" :xl="12">
+			<el-col :xs="24" :sm="24" :md="24" :lg="24" :xl="24">
+        <Right></Right>
+			</el-col>
 
-				<Left></Left>
+		</el-row>
 
-			</el-col>
-			<el-col :xs="24" :sm="24" :md="12" :lg="12" :xl="12">
-				<Right></Right>
-			</el-col>
-		</el-row>
-		<!-- <div class="main">
-	  <Left class="left"></Left>
-	  <Right class="right"></Right>
-  </div> -->
-		<el-row :gutter="10">
-			<el-col :span="24">
-				<Nav></Nav>
-			</el-col>
-		</el-row>
-		<!-- <div class="footer">
-      左手文件系统 &copy; 2024 仿Windows文件系统
-  </div> -->
+    <el-row>
+      <div class="fixed-bottom"><Nav></Nav></div>
+    </el-row>
+
 	</el-watermark>
 </template>
 
@@ -55,12 +33,20 @@
 		background-color: #f0f0f0;
 		background-image: url("https://win12online.com/background/bg-light.svg");
 		background-size: cover;
-	}
+  }
+  .fixed-bottom {
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    width: 100%;
+    padding: 10px;
+    text-align: center;
 
-	.main {
-		display: flex;
-		margin: 20px;
-	}
+  }
+	/*.main {*/
+	/*	display: flex;*/
+	/*	margin: 20px;*/
+	/*}*/
 
 	.header {
 		/*background-color: #3a7bd5;*/

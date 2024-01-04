@@ -1,1 +1,2 @@
-/vue/mini_os/node_modules/
+.idea
+vue/mini_os/yarn.lock
