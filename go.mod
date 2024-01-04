@@ -1,6 +1,6 @@
 module fileSys
 
-go 1.20
+go 1.19
 
 require (
 	github.com/astaxie/beego v1.12.3 // indirect
