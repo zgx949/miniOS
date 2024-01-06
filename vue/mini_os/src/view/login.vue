@@ -65,7 +65,7 @@
 
 <script setup>
 import { useRouter } from 'vue-router';
-import { ref, reactive } from 'vue';
+import { ref, reactive, onMounted } from 'vue';
 import {ElForm, ElFormItem, ElInput, ElButton, ElNotification} from 'element-plus';
 
 const router = useRouter();
@@ -89,11 +89,22 @@ const handleSubmit = () => {
     type: 'success',
   })
   router.push({ name: 'Desk' })
-
-
 }
 
-
+onMounted(() => {
+  const token = localStorage.getItem('token')
+  // 判断是否已登录
+  const isLoggedIn = token !== null && token !== ''
+  // 如果存在用户登录状态
+  if (isLoggedIn) {
+    ElNotification({
+      title: '系统提示',
+      message: `账号已登录`,
+      type: 'success',
+    })
+    router.push({ name: 'Desk' })
+  }
+})
 </script>
 
 <style scoped>
