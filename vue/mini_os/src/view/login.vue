@@ -103,6 +103,12 @@ onMounted(() => {
       type: 'success',
     })
     router.push({ name: 'Desk' })
+  } else {
+    ElNotification({
+      title: '系统提示',
+      message: `请先登录账号`,
+      type: 'error',
+    })
   }
 })
 </script>
