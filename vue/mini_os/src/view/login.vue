@@ -47,11 +47,11 @@
           </div>
 
           <div class="text-center w-full p-t-25 p-b-230">
-            <a href="#" class="txt1">忘记密码？</a>
+            <a href="/forget.html" class="txt1">忘记密码？</a>
           </div>
 
           <div class="text-center w-full">
-            <a class="txt1" href="#">
+            <a class="txt1" href="/register.html">
               立即注册
               <i class="fa fa-long-arrow-right"></i>
             </a>
