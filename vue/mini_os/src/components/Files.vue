@@ -1,20 +1,33 @@
 <template>
 	<div class="files">
-<!--		<div>-->
-<!--			<h2 style="text-align: center;margin: 10px;">文件系统</h2>-->
-<!--		</div>-->
+    <el-dialog v-model="dialogFormVisible" title="新建文件/文件夹">
+      文件（夹）名<el-input v-model="createDirName"></el-input>
+      <template #footer>
+      <span class="dialog-footer">
+        <el-button @click="dialogFormVisible = false">取消</el-button>
+        <el-button type="primary" @click="create(createDirName, 'folder')">
+          新建
+        </el-button>
+      </span>
+      </template>
+    </el-dialog>
 		<div>
 			<el-text style="color: #000000; font-size: large;">当前目录: </el-text>
 
 			<el-cascader :options="options" :props="props1" clearable />
 
-			<el-button color="#C45DD5" class="fop" type="primary" :icon="ArrowLeftBold">
-				<!-- <span
-					style="color: #ffffff;"></span> -->
-			</el-button>
+			<el-button
+          color="#C45DD5"
+          class="fop"
+          type="primary"
+          :icon="ArrowLeftBold"
+          @click="back"
+      >
+			后退
+      </el-button>
+
 
 		</div>
-		<!-- <div style="display: flex;justify-content: flex-end;align-items: center;"> -->
 		<div>
 			<el-row :gutter="10">
 				<el-col :xs="12" :sm="12" :md="6" :lg="6" :xl="6">
@@ -24,11 +37,11 @@
 				</el-col>
 				<el-col :xs="12" :sm="12" :md="6" :lg="6" :xl="6">
 					<el-button color="#C45DD5" class="fop" type="primary" :icon="FolderAdd"><span
-							style="color: #ffffff;">新建文件夹</span></el-button>
+							style="color: #ffffff;" @click="dialogFormVisible=true">新建文件夹</span></el-button>
 				</el-col>
 				<el-col :xs="12" :sm="12" :md="6" :lg="6" :xl="6">
 					<el-button color="#C45DD5" class="fop" type="primary" :icon="DocumentAdd"><span
-							style="color: #ffffff;">新建文件</span></el-button>
+							style="color: #ffffff;" @click="dialogFormVisible=true">新建文件</span></el-button>
 				</el-col>
 				<el-col :xs="12" :sm="12" :md="6" :lg="6" :xl="6">
 					<el-button color="#C45DD5" class="fop" type="primary" :icon="Files"><span
@@ -38,19 +51,31 @@
 			</el-row>
 		</div>
 		<!-- 文件表格数据 -->
-		<el-table :data="filterTableData" style="width: 100%; color: #000000;" height="300" :header-cell-style="{ color: '#000000' }">
-			<el-table-column label="文件名" prop="name" width="100">
+		<el-table
+        :data="filterTableData"
+        style="width: 100%; color: #000000;"
+        height="300"
+        :header-cell-style="{ color: '#000000' }"
+        v-loading="loading"
+    >
+			<el-table-column label="文件名" prop="fileName" width="100">
 				<template #default="scope">
-					<el-button link style="color: #000000;" @click="open">{{ scope.row.name }}</el-button>
-			    </template>
+					<el-button v-if="scope.row.fileType==='folder'" link style="color: #000000;" @click="open(scope.row)">{{ scope.row.fileName }}</el-button>
+          <el-button v-else link style="color: #000000;" @click="open(scope.row)">{{ scope.row.fileName }}</el-button>
+        </template>
 			</el-table-column>
-			
-			<el-table-column label="修改日期" prop="date" width="120" />
-			<el-table-column label="类型" prop="type" width="70"/>
-			<el-table-column label="大小" prop="size"  width="100"/>
+
+      <el-table-column label="修改日期" prop="modificationTime" width="120" />
+      <el-table-column label="类型" prop="fileType" width="80">
+        <template #default="scope">
+          <el-tag type="success" v-if="scope.row.fileType === 'folder'">文件夹</el-tag>
+          <el-tag v-else>文件</el-tag>
+        </template>
+      </el-table-column>
+			<el-table-column label="大小" prop="fileSize"  width="100"/>
 			<el-table-column align="right">
 				<template #header>
-					<el-input v-model="search" size="small" placeholder="搜索文件(夹)" />
+					<el-input v-model="search" placeholder="搜索文件(夹)" />
 				</template>
 				<template #default="scope">
 					<el-button size="small" type="success" @click="handleDelete(scope.$index, scope.row)">分享</el-button>
@@ -73,12 +98,15 @@
 		UploadFilled,
 		DocumentAdd
 	} from '@element-plus/icons-vue'
-	import {
-		computed,
-		ref
-	} from 'vue'
+  import {
+    computed,
+    ref,
+    onMounted, watch
+  } from 'vue'
 	import { ElNotification } from 'element-plus'
-
+  import {createFCB, list} from "@/api/files";
+  const dialogFormVisible = ref(false)
+  const createDirName = ref('') // 新建文件名
 	// 目录单选
 	const props1 = {
 		checkStrictly: true,
@@ -342,35 +370,104 @@
       },
     ]
 
-// 文件目录
+const loading = ref(false)
+
+
 const tableData = ref([
   {
-    date: '2016-05-03',
-    name: 'Tom',
-    type: '文件夹',
-	size: '-'
-  },
-  {
-    date: '2016-05-02',
-    name: 'John',
-    type: '文件',
-	size: '50KB'
-  },
-  {
-    date: '2016-05-04',
-    name: 'Morgan',
-    type: '文件',
-	size: '50KB'
-  },
+    "_id": "65994c104379f4da38c8e221",
+    "creationTime": "0001-01-01T00:00:00Z",
+    "fileLocation": 0,
+    "fileName": "123.txt",
+    "fileSize": 0,
+    "fileType": "file",
+    "group": 0,
+    "inodeNumber": 0,
+    "modificationTime": "0001-01-01T00:00:00Z",
+    "owner": 0,
+    "parentId": "65994c2c4379f4da38c8e222",
+    "permissions": ""
+  }
+]) // 文件目录
+const parentId = ref(["root"]) // 文件夹id队列
 
-])
+// 监听文件夹id
+watch(parentId, () =>{
+  loadData(parentId.value.at(-1))
+})
+
+// 加载数据
+const loadData = (id) => {
+  loading.value = true
+  list(id).then(res => {
+    let data = res.data.data
+    // 加载数据
+    if (res.data.code === 0) {
+      if (!data) {
+        data = []
+      }
+      data.sort((a, b) => b.fileType.localeCompare(a.fileType))
+      tableData.value = data
+    }
+    loading.value = false
+  })
+}
+// 后退文件夹
+const back = () => {
+  const id = parentId.value.at(-1)
+  if (id === 'root') {
+    ElNotification({
+      title: '文件系统',
+      message: '已经是根目录了',
+      type: 'error',
+    })
+    return
+  }
+  parentId.value.pop()
+
+  loadData(parentId.value.at(-1))
+}
+
+// 创建一个FCB
+const create = (FileName, FileType) => {
+  let id = parentId.value.at(-1)
+  if (id === 'root') {
+    id = null
+  }
+  createFCB({
+    FileName: FileName,
+    FileType: FileType,
+    parentId: id
+  }).then(res => {
+    if (res.data.code === 0) {
+      dialogFormVisible.value = false
+      ElNotification({
+        title: '文件系统',
+        message: res.data.msg,
+        type: 'success',
+      })
+      loadData(parentId.value.at(-1))
+
+    } else {
+      ElNotification({
+        title: '文件系统',
+        message: res.data.msg,
+        type: 'error',
+      })
+    }
+  })
+}
+
+onMounted(() => {
+  loadData(parentId.value[0])
+})
 
 const search = ref('')
 const filterTableData = computed(() =>
   tableData.value.filter(
     (data) =>
       !search.value ||
-      data.name.toLowerCase().includes(search.value.toLowerCase())
+      data.fileName.toLowerCase().includes(search.value.toLowerCase())
   )
 )
 const handleEdit = (index, row) => {
@@ -390,13 +487,19 @@ const handleDelete = (index, row) => {
   console.log(index, row)
 }
 // 打开文件或者文件夹
-const open = (index, row) => {
+const open = (row) => {
+  if (row.fileType === 'folder') {
+    // 改变当前路径ID
+    parentId.value.push(row._id)
+    loadData(parentId.value.at(-1))
+    return
+  }
 	ElNotification({
-	    title: 'Success',
-	    message: 'This is a success message',
+	    title: '文件系统',
+	    message: `打开文件：${row.fileName}`,
 	    type: 'success',
   })
-	console.log(index, row)
+	console.log(row.value)
 	
 }
 </script>

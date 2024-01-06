@@ -43,7 +43,7 @@
           </div>
 
           <div class="container-login100-form-btn p-t-10">
-            <button class="login100-form-btn"  @click="handleSubmit">登 录</button>
+            <span class="login100-form-btn" @click="handleSubmit">登 录</span>
           </div>
 
           <div class="text-center w-full p-t-25 p-b-230">
@@ -67,6 +67,7 @@
 import { useRouter } from 'vue-router';
 import { ref, reactive, onMounted } from 'vue';
 import {ElForm, ElFormItem, ElInput, ElButton, ElNotification} from 'element-plus';
+import { userLogin } from '@/api/users'
 
 const router = useRouter();
 
@@ -77,18 +78,37 @@ const rules = {
 
 const form = reactive({
   username: 'guest',
-  password: 'guest',
+  password: '123456',
 });
 
 // 登录函数
 const handleSubmit = () => {
-  localStorage.setItem('token', form.username + '||' + form.password)
-  ElNotification({
-    title: '系统提示',
-    message: `登录成功`,
-    type: 'success',
+  // debugger
+  userLogin({
+    username: form.username,
+    password: form.password
+  }).then(res => {
+    // debugger
+    if (res.data.code === 0) {
+      // 登录成功
+      localStorage.setItem('token', res.data.data.ID)
+      localStorage.setItem('userInfo', JSON.stringify(res.data.data))
+      ElNotification({
+        title: '系统提示',
+        message: `登录成功`,
+        type: 'success',
+      })
+      router.push({ name: 'Desk' })
+
+    } else {
+      // 登录失败
+      ElNotification({
+        title: '系统提示',
+        message: `${res.data.msg}`,
+        type: 'error',
+      })
+    }
   })
-  router.push({ name: 'Desk' })
 }
 
 onMounted(() => {

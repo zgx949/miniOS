@@ -66,7 +66,8 @@ const opt = ref('')
 //  退出登录
 const login_out = ()=> {
     // localStorage.setItem('token', null)
-  localStorage.removeItem('token')
+  // localStorage.removeItem('token')
+  localStorage.clear()
   ElNotification({
     title: '系统消息',
     message: '退出系统成功',
