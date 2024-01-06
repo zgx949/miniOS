@@ -1,8 +1,8 @@
 <template>
 	<div class="files">
-		<div>
-			<h2 style="text-align: center;margin: 10px;">文件系统</h2>
-		</div>
+<!--		<div>-->
+<!--			<h2 style="text-align: center;margin: 10px;">文件系统</h2>-->
+<!--		</div>-->
 		<div>
 			<el-text style="color: #000000; font-size: large;">当前目录: </el-text>
 
@@ -414,7 +414,7 @@ const open = (index, row) => {
 		color: white;
 		text-align: center;
 		text-decoration: none;
-		display: inline-block;
+		/*display: inline-block;*/
 		font-size: 16px;
 		margin: 4px 2px;
 		cursor: pointer;

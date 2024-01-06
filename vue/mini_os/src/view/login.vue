@@ -66,7 +66,7 @@
 <script setup>
 import { useRouter } from 'vue-router';
 import { ref, reactive } from 'vue';
-import { ElForm, ElFormItem, ElInput, ElButton } from 'element-plus';
+import {ElForm, ElFormItem, ElInput, ElButton, ElNotification} from 'element-plus';
 
 const router = useRouter();
 
@@ -83,7 +83,11 @@ const form = reactive({
 // 登录函数
 const handleSubmit = () => {
   localStorage.setItem('token', form.username + '||' + form.password)
-
+  ElNotification({
+    title: '系统提示',
+    message: `登录成功`,
+    type: 'success',
+  })
   router.push({ name: 'Desk' })
 
 
