@@ -162,7 +162,7 @@ const open = (app)=> {
 	url.value = app.url
   if (url.value === '') {
     loading.value = false
-    component = ref(defineAsyncComponent(() => import(`./${app.component}.vue`)))
+    component = ref(defineAsyncComponent(() => import(/* @vite-ignore */ `./${app.component}.vue`)))
   }
   title.value = app.name
 	width.value = app.width

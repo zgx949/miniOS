@@ -35,13 +35,13 @@
 							style="color: #ffffff;">上传文件</span>
 					</el-button>
 				</el-col>
-				<el-col :xs="12" :sm="12" :md="6" :lg="6" :xl="6">
-					<el-button color="#C45DD5" class="fop" type="primary" :icon="FolderAdd"><span
-							style="color: #ffffff;" @click="dialogFormVisible=true">新建文件夹</span></el-button>
-				</el-col>
+<!--				<el-col :xs="12" :sm="12" :md="6" :lg="6" :xl="6">-->
+<!--					<el-button color="#C45DD5" class="fop" type="primary" :icon="FolderAdd"><span-->
+<!--							style="color: #ffffff;" @click="dialogFormVisible=true">新建文件夹</span></el-button>-->
+<!--				</el-col>-->
 				<el-col :xs="12" :sm="12" :md="6" :lg="6" :xl="6">
 					<el-button color="#C45DD5" class="fop" type="primary" :icon="DocumentAdd"><span
-							style="color: #ffffff;" @click="dialogFormVisible=true">新建文件</span></el-button>
+							style="color: #ffffff;" @click="dialogFormVisible=true">新建</span></el-button>
 				</el-col>
 				<el-col :xs="12" :sm="12" :md="6" :lg="6" :xl="6">
 					<el-button color="#C45DD5" class="fop" type="primary" :icon="Files"><span
