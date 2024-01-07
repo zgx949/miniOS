@@ -21,6 +21,10 @@ func main() {
 	fileGroup := r.Group("file")
 	router.SetFCBRouter(fileGroup)
 
+	// App路由组注册
+	appsGroup := r.Group("app")
+	router.SetAppsRouter(appsGroup)
+
 	r.Run(":8080") // 启动服务器
 
 	// 断开连接

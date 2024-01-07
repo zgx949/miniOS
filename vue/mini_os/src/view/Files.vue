@@ -1,339 +1,43 @@
 <template>
 	<div class="files">
-    <el-dialog v-model="dialogFormVisible" title="新建文件/文件夹">
-      文件（夹）名<el-input v-model="createDirName"></el-input>
-      <template #footer>
-      <span class="dialog-footer">
-        <el-button @click="dialogFormVisible = false">取消</el-button>
-        <el-button type="primary" @click="create(createDirName, 'folder')">
-          新建
-        </el-button>
-      </span>
-      </template>
-    </el-dialog>
+
 		<div>
 			<el-text style="color: #000000; font-size: large;">当前目录: </el-text>
-
-			<el-cascader :options="options" :props="props1" clearable />
-      
-		</div>
-		<div>
-			<el-row :gutter="10">
-        <el-col :xs="12" :sm="12" :md="6" :lg="6" :xl="6">
-          <el-button color="#C45DD5" class="fop" type="primary" :icon="ArrowLeftBold"><span
-              style="color: #ffffff;" @click="back">后退</span>
-          </el-button>
-        </el-col>
-				<el-col :xs="12" :sm="12" :md="6" :lg="6" :xl="6">
-					<el-button color="#C45DD5" class="fop" type="primary" :icon="UploadFilled"><span
-							style="color: #ffffff;">上传</span>
-					</el-button>
-				</el-col>
-				<el-col :xs="12" :sm="12" :md="6" :lg="6" :xl="6">
-					<el-button color="#C45DD5" class="fop" type="primary" :icon="DocumentAdd"><span
-							style="color: #ffffff;" @click="dialogFormVisible=true">新建</span></el-button>
-				</el-col>
-				<el-col :xs="12" :sm="12" :md="6" :lg="6" :xl="6">
-					<el-button color="#C45DD5" class="fop" type="primary" :icon="Files"><span
-							style="color: #ffffff;">粘贴</span>
-					</el-button>
-				</el-col>
-
-			</el-row>
+      <span>{{ path }}</span>
+      <!-- 操作菜单   -->
+      <fileOperation @back="back" @create="create"></fileOperation>
 		</div>
 		<!-- 文件表格数据 -->
-    <filesTable :data="tableData" @openFolder="openFolder" v-loading="loading"></filesTable>
+    <filesTable :data="tableData" @openFolder="openFolder" @reload="reload" v-loading="loading"></filesTable>
 	</div>
 
 
 </template>
 
 <script setup>
-	import {
-		Files,
-		ArrowLeftBold,
-		UploadFilled,
-		DocumentAdd
-	} from '@element-plus/icons-vue'
-  import {
-    computed,
-    ref,
-    onMounted, watch
-  } from 'vue'
-	import { ElNotification } from 'element-plus'
-  import {createFCB, list} from "@/api/files";
-  import filesTable  from '@/components/files_components/filesTable.vue'
-  const dialogFormVisible = ref(false)
-  const createDirName = ref('') // 新建文件名
-	// 目录单选
-	const props1 = {
-		checkStrictly: true,
-	}
+import fileOperation from '@/components/files_components/fileOperation.vue'
+import filesTable from '@/components/files_components/filesTable.vue'
+import {computed, ref, onMounted, watch} from 'vue'
+import { ElNotification } from 'element-plus'
+import {createFCB, list} from "@/api/files";
+const dialogFormVisible = ref(false)
 
-	const options = [
-      {
-        value: 'guide',
-        label: 'Guide',
-        children: [{
-            value: 'disciplines',
-            label: 'Disciplines',
-            children: [{
-                value: 'consistency',
-                label: 'Consistency',
-              },
-              {
-                value: 'feedback',
-                label: 'Feedback',
-              },
-              {
-                value: 'efficiency',
-                label: 'Efficiency',
-              },
-              {
-                value: 'controllability',
-                label: 'Controllability',
-              },
-            ],
-          },
-          {
-            value: 'navigation',
-            label: 'Navigation',
-            children: [{
-                value: 'side nav',
-                label: 'Side Navigation',
-              },
-              {
-                value: 'top nav',
-                label: 'Top Navigation',
-              },
-            ],
-          },
-        ],
-      },
-      {
-        value: 'component',
-        label: 'Component',
-        children: [{
-            value: 'basic',
-            label: 'Basic',
-            children: [{
-                value: 'layout',
-                label: 'Layout',
-              },
-              {
-                value: 'color',
-                label: 'Color',
-              },
-              {
-                value: 'typography',
-                label: 'Typography',
-              },
-              {
-                value: 'icon',
-                label: 'Icon',
-              },
-              {
-                value: 'button',
-                label: 'Button',
-              },
-            ],
-          },
-          {
-            value: 'form',
-            label: 'Form',
-            children: [{
-                value: 'radio',
-                label: 'Radio',
-              },
-              {
-                value: 'checkbox',
-                label: 'Checkbox',
-              },
-              {
-                value: 'input',
-                label: 'Input',
-              },
-              {
-                value: 'input-number',
-                label: 'InputNumber',
-              },
-              {
-                value: 'select',
-                label: 'Select',
-              },
-              {
-                value: 'cascader',
-                label: 'Cascader',
-              },
-              {
-                value: 'switch',
-                label: 'Switch',
-              },
-              {
-                value: 'slider',
-                label: 'Slider',
-              },
-              {
-                value: 'time-picker',
-                label: 'TimePicker',
-              },
-              {
-                value: 'date-picker',
-                label: 'DatePicker',
-              },
-              {
-                value: 'datetime-picker',
-                label: 'DateTimePicker',
-              },
-              {
-                value: 'upload',
-                label: 'Upload',
-              },
-              {
-                value: 'rate',
-                label: 'Rate',
-              },
-              {
-                value: 'form',
-                label: 'Form',
-              },
-            ],
-          },
-          {
-            value: 'data',
-            label: 'Data',
-            children: [{
-                value: 'table',
-                label: 'Table',
-              },
-              {
-                value: 'tag',
-                label: 'Tag',
-              },
-              {
-                value: 'progress',
-                label: 'Progress',
-              },
-              {
-                value: 'tree',
-                label: 'Tree',
-              },
-              {
-                value: 'pagination',
-                label: 'Pagination',
-              },
-              {
-                value: 'badge',
-                label: 'Badge',
-              },
-            ],
-          },
-          {
-            value: 'notice',
-            label: 'Notice',
-            children: [{
-                value: 'alert',
-                label: 'Alert',
-              },
-              {
-                value: 'loading',
-                label: 'Loading',
-              },
-              {
-                value: 'message',
-                label: 'Message',
-              },
-              {
-                value: 'message-box',
-                label: 'MessageBox',
-              },
-              {
-                value: 'notification',
-                label: 'Notification',
-              },
-            ],
-          },
-          {
-            value: 'navigation',
-            label: 'Navigation',
-            children: [{
-                value: 'menu',
-                label: 'Menu',
-              },
-              {
-                value: 'tabs',
-                label: 'Tabs',
-              },
-              {
-                value: 'breadcrumb',
-                label: 'Breadcrumb',
-              },
-              {
-                value: 'dropdown',
-                label: 'Dropdown',
-              },
-              {
-                value: 'steps',
-                label: 'Steps',
-              },
-            ],
-          },
-          {
-            value: 'others',
-            label: 'Others',
-            children: [{
-                value: 'dialog',
-                label: 'Dialog',
-              },
-              {
-                value: 'tooltip',
-                label: 'Tooltip',
-              },
-              {
-                value: 'popover',
-                label: 'Popover',
-              },
-              {
-                value: 'card',
-                label: 'Card',
-              },
-              {
-                value: 'carousel',
-                label: 'Carousel',
-              },
-              {
-                value: 'collapse',
-                label: 'Collapse',
-              },
-            ],
-          },
-        ],
-      },
-      {
-        value: 'resource',
-        label: 'Resource',
-        children: [{
-            value: 'axure',
-            label: 'Axure Components',
-          },
-          {
-            value: 'sketch',
-            label: 'Sketch Templates',
-          },
-          {
-            value: 'docs',
-            label: 'Design Documentation',
-          },
-        ],
-      },
-    ]
+const pathArr = ref(['root'])
+
+const path = computed(() => {
+  return pathArr.value.join('/')
+})
+const options = []
 
 const loading = ref(false)
 
-const openFolder = (id)=> {
+const openFolder = (id, dirName)=> {
   parentId.value.push(id)
+  // 把当前目录名加入数组
+  pathArr.value.push(dirName)
   loadData(parentId.value.at(-1))
 }
+
 const tableData = ref([
   {
     "_id": "65994c104379f4da38c8e221",
@@ -357,6 +61,11 @@ watch(parentId, () =>{
   loadData(parentId.value.at(-1))
 })
 
+// 刷新数据
+const reload = () => {
+  loadData(parentId.value.at(-1))
+}
+
 // 加载数据
 const loadData = (id) => {
   loading.value = true
@@ -375,6 +84,8 @@ const loadData = (id) => {
 }
 // 后退文件夹
 const back = () => {
+  // 删除一个文件名
+
   const id = parentId.value.at(-1)
   if (id === 'root') {
     ElNotification({
@@ -384,6 +95,7 @@ const back = () => {
     })
     return
   }
+  pathArr.value.pop()
   parentId.value.pop()
 
   loadData(parentId.value.at(-1))
@@ -423,100 +135,9 @@ onMounted(() => {
   loadData(parentId.value[0])
 })
 
-const search = ref('')
-const filterTableData = computed(() =>
-  tableData.value.filter(
-    (data) =>
-      !search.value ||
-      data.fileName.toLowerCase().includes(search.value.toLowerCase())
-  )
-)
-const handleEdit = (index, row) => {
-	ElNotification({
-	title: 'Success',
-	message: 'This is a success message',
-	type: 'success',
-  })
-  console.log(index, row)
-}
-const handleDelete = (index, row) => {
-	ElNotification({
-	title: 'Success',
-	message: 'This is a success message',
-	type: 'success',
-  })
-  console.log(index, row)
-}
 
 </script>
 
-<style>
-	.upload-demo {
-		width: 20%;
-		height: 20px;
-	}
+<style scoped>
 
-	.fop {
-		/*background-color: #4CAF50;*/
-		background-color: #C45DD5;
-		border: none;
-		color: white;
-		text-align: center;
-		text-decoration: none;
-		/*display: inline-block;*/
-		font-size: 16px;
-		margin: 4px 2px;
-		cursor: pointer;
-		padding: 10px 24px;
-		border-radius: 12px;
-	}
-
-	.fop:hover {
-		/*background-color: #45a049;*/
-		background-color: #8A66FE;
-	}
-
-	/* 表格美化 */
-	table {
-		border-collapse: collapse;
-		width: 100%;
-
-	}
-
-	th,
-	td {
-		/*border: 1px solid #ccc;*/
-		padding: 8px;
-		text-align: left;
-		transition: background-color 0.3s;
-	}
-
-	tr:hover {
-		background-color: #f2f2f2;
-	}
-
-	th {
-		background-color: #f2f2f2;
-	}
-
-	.files {
-		/* width: 50%; */
-		background-color: #ffffff;
-		padding: 20px;
-		box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
-		opacity: 0.8;
-		margin-right: 1%;
-		height: 450px;
-		/* 设置容器高度 */
-		overflow-y: scroll;
-		/* 设置水平滚动条 */
-		overflow-x: hidden;
-		/* 隐藏垂直滚动条 */
-		margin: 5px;
-		border-radius: 10px;
-	}
-
-	a {
-		padding: 2px;
-	}
 </style>

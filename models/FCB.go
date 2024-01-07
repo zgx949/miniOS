@@ -126,3 +126,47 @@ func FolderList(c *gin.Context) {
 	})
 
 }
+
+// DelFCB 删除FCB
+func DelFCB(c *gin.Context) {
+	// 获取文件ID
+	Id := c.Param("Id")
+	ID, err := primitive.ObjectIDFromHex(Id)
+	// 解析请求体
+	if err != nil {
+		c.JSON(http.StatusOK, gin.H{
+			"msg":  "请求错误",
+			"code": 1,
+		})
+		return
+	}
+
+	// 构造查询条件
+	var data bson.M
+	data = bson.M{
+		"_id": ID,
+	}
+
+	// 删除当前FCB
+	res, err := FCBTable().DeleteOne(
+		context.TODO(),
+		data)
+
+	if err != nil {
+		// 删除出错
+		c.JSON(http.StatusOK, gin.H{
+			"msg":  err,
+			"code": 1,
+		})
+
+	} else {
+		c.JSON(http.StatusOK, gin.H{
+			"msg":  "删除成功",
+			"code": 0,
+			"data": res,
+		})
+	}
+	// TODO: 删除Inode节点
+	// TODO：删除该FCB的子目录及Inode节点
+
+}

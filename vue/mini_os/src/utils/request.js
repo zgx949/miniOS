@@ -20,7 +20,17 @@ function post(url, data) {
   })
 }
 
+function del(url, data) {
+  return axios({
+    method: 'delete',
+    url: baseUrl + url,
+    data: JSON.stringify(data),
+    header: {"token": localStorage.getItem("token")}
+  })
+}
+
 export default {
   get,
-  post
+  post,
+  del
 };
