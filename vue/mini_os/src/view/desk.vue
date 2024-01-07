@@ -63,7 +63,7 @@ onMounted(() => {
 body {
   font-family: '微软雅黑', sans-serif;
   background-color: #f0f0f0;
-  background-image: url("https://win12online.com/background/bg-light.svg");
+  background-image: url("bg-light.svg");
   background-size: cover;
 }
 .fixed-bottom {

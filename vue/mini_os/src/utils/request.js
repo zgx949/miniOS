@@ -1,5 +1,5 @@
 import axios from 'axios';
-const baseUrl = 'http://localhost:3000'
+const baseUrl = ''
 // 封装get请求
 function get(url, params) {
   return axios({

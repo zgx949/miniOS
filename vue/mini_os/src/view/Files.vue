@@ -15,75 +15,34 @@
 			<el-text style="color: #000000; font-size: large;">当前目录: </el-text>
 
 			<el-cascader :options="options" :props="props1" clearable />
-
-			<el-button
-          color="#C45DD5"
-          class="fop"
-          type="primary"
-          :icon="ArrowLeftBold"
-          @click="back"
-      >
-			后退
-      </el-button>
-
-
+      
 		</div>
 		<div>
 			<el-row :gutter="10">
+        <el-col :xs="12" :sm="12" :md="6" :lg="6" :xl="6">
+          <el-button color="#C45DD5" class="fop" type="primary" :icon="ArrowLeftBold"><span
+              style="color: #ffffff;" @click="back">后退</span>
+          </el-button>
+        </el-col>
 				<el-col :xs="12" :sm="12" :md="6" :lg="6" :xl="6">
 					<el-button color="#C45DD5" class="fop" type="primary" :icon="UploadFilled"><span
-							style="color: #ffffff;">上传文件</span>
+							style="color: #ffffff;">上传</span>
 					</el-button>
 				</el-col>
-<!--				<el-col :xs="12" :sm="12" :md="6" :lg="6" :xl="6">-->
-<!--					<el-button color="#C45DD5" class="fop" type="primary" :icon="FolderAdd"><span-->
-<!--							style="color: #ffffff;" @click="dialogFormVisible=true">新建文件夹</span></el-button>-->
-<!--				</el-col>-->
 				<el-col :xs="12" :sm="12" :md="6" :lg="6" :xl="6">
 					<el-button color="#C45DD5" class="fop" type="primary" :icon="DocumentAdd"><span
 							style="color: #ffffff;" @click="dialogFormVisible=true">新建</span></el-button>
 				</el-col>
 				<el-col :xs="12" :sm="12" :md="6" :lg="6" :xl="6">
 					<el-button color="#C45DD5" class="fop" type="primary" :icon="Files"><span
-							style="color: #ffffff;">粘贴文件</span>
+							style="color: #ffffff;">粘贴</span>
 					</el-button>
 				</el-col>
+
 			</el-row>
 		</div>
 		<!-- 文件表格数据 -->
-		<el-table
-        :data="filterTableData"
-        style="width: 100%; color: #000000;"
-        height="300"
-        :header-cell-style="{ color: '#000000' }"
-        v-loading="loading"
-    >
-			<el-table-column label="文件名" prop="fileName" width="100">
-				<template #default="scope">
-					<el-button v-if="scope.row.fileType==='folder'" link style="color: #000000;" @click="open(scope.row)">{{ scope.row.fileName }}</el-button>
-          <el-button v-else link style="color: #000000;" @click="open(scope.row)">{{ scope.row.fileName }}</el-button>
-        </template>
-			</el-table-column>
-
-      <el-table-column label="修改日期" prop="modificationTime" width="120" />
-      <el-table-column label="类型" prop="fileType" width="80">
-        <template #default="scope">
-          <el-tag type="success" v-if="scope.row.fileType === 'folder'">文件夹</el-tag>
-          <el-tag v-else>文件</el-tag>
-        </template>
-      </el-table-column>
-			<el-table-column label="大小" prop="fileSize"  width="100"/>
-			<el-table-column align="right">
-				<template #header>
-					<el-input v-model="search" placeholder="搜索文件(夹)" />
-				</template>
-				<template #default="scope">
-					<el-button size="small" type="success" @click="handleDelete(scope.$index, scope.row)">分享</el-button>
-					<el-button size="small" type="primary" @click="handleDelete(scope.$index, scope.row)">下载</el-button>
-					<el-button size="small" type="danger" @click="handleDelete(scope.$index, scope.row)">删除</el-button>
-				</template>
-			</el-table-column>
-		</el-table>
+    <filesTable :data="tableData" @openFolder="openFolder" v-loading="loading"></filesTable>
 	</div>
 
 
@@ -91,8 +50,6 @@
 
 <script setup>
 	import {
-		Search,
-		FolderAdd,
 		Files,
 		ArrowLeftBold,
 		UploadFilled,
@@ -105,6 +62,7 @@
   } from 'vue'
 	import { ElNotification } from 'element-plus'
   import {createFCB, list} from "@/api/files";
+  import filesTable  from '@/components/files_components/filesTable.vue'
   const dialogFormVisible = ref(false)
   const createDirName = ref('') // 新建文件名
 	// 目录单选
@@ -372,7 +330,10 @@
 
 const loading = ref(false)
 
-
+const openFolder = (id)=> {
+  parentId.value.push(id)
+  loadData(parentId.value.at(-1))
+}
 const tableData = ref([
   {
     "_id": "65994c104379f4da38c8e221",
@@ -486,22 +447,7 @@ const handleDelete = (index, row) => {
   })
   console.log(index, row)
 }
-// 打开文件或者文件夹
-const open = (row) => {
-  if (row.fileType === 'folder') {
-    // 改变当前路径ID
-    parentId.value.push(row._id)
-    loadData(parentId.value.at(-1))
-    return
-  }
-	ElNotification({
-	    title: '文件系统',
-	    message: `打开文件：${row.fileName}`,
-	    type: 'success',
-  })
-	console.log(row.value)
-	
-}
+
 </script>
 
 <style>
