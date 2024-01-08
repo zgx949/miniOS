@@ -8,18 +8,12 @@ const directives = {
             if (!binding.value && (binding.value ?? "") !== "") return;
             // 拖拽实现
             const odiv = el.parentNode;
-            // bus.on("showDrag", (sta: any) => {
-            //   odiv.style.zIndex = sta;
-            // }); //bus是用来多个窗口调整位置的，我结合项目进行的层级调整，这里可以去掉
-            // 配置手机端长按拖拽
-            odiv.ontouchstart = (eve: any) => {
-                // eve.preventDefault();   // 阻止默认事件
+
+            // // 配置移动端拖拽
+            el.ontouchstart = (e: any) => {
                 odiv.style.zIndex = 1; //当前拖拽的在最前面显示
-                eve = eve || window.event;
-                const mx = eve.pageX; //鼠标点击时的坐标
-                const my = eve.pageY; //鼠标点击时的坐标
-                const dleft = odiv.offsetLeft; //窗口初始位置
-                const dtop = odiv.offsetTop;
+                const disX = e.touches[0].clientX - odiv.offsetLeft;
+                const disY = e.touches[0].clientY - odiv.offsetTop;
                 const clientWidth = document.documentElement.clientWidth; //页面的宽
                 const oWidth = odiv.clientWidth; //窗口的宽
                 const maxX = clientWidth - oWidth; // x轴能移动的最大距离
@@ -28,22 +22,23 @@ const directives = {
                 const maxY = clientHeight - oHeight; //y轴能移动的最大距离
                 document.ontouchmove = (e: any) => {
                     e.preventDefault;
-                    const x = e.pageX;
-                    const y = e.pageY;
-                    let left = x - mx + dleft; //移动后的新位置
-                    let top = y - my + dtop; //移动后的新位置
+                    let left = e.touches[0].clientX - disX;
+                    let top = e.touches[0].clientY - disY;
                     if (left < 0) left = 0;
                     if (left > maxX) left = maxX;
                     if (top < 0) top = 0;
                     if (top > maxY) top = maxY;
-
                     odiv.style.left = left + "px";
                     odiv.style.top = top + "px";
                     odiv.style.marginLeft = 0;
                     odiv.style.marginTop = 0;
                 };
+                document.ontouchend = () => {
+                    document.ontouchmove = null;
+                };
+            };
 
-            }
+
             // 配置PC端拖拽
             el.onmousedown = (eve: any) => {
                 // bus.emit("showDrag", 0); //按下的时候发送事件 让其余窗体恢复层级
