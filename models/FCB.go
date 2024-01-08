@@ -18,6 +18,7 @@ type FCB struct {
 	ID               primitive.ObjectID `bson:"_id,omitempty"`
 	FileName         string             `bson:"fileName"`
 	ParentID         primitive.ObjectID `bson:"parentId,omitempty"`
+	Inodes           []string           `bson:"inodes"`
 	FileSize         int64              `bson:"fileSize"`
 	CreationTime     time.Time          `bson:"creationTime"`
 	ModificationTime time.Time          `bson:"modificationTime"`
@@ -172,18 +173,58 @@ func DelFCB(c *gin.Context) {
 }
 
 func UploadFile(c *gin.Context) {
-	// 获取文件块
+	// 获取文件ID
+	FCBId, _ := c.GetPostForm("FCBId")
+	id, _ := primitive.ObjectIDFromHex(FCBId)
+	// 读取文件块
+	block, _ := c.FormFile("file")
+
+	// md5校验
+
+	//var results []bson.M
+	var fcb FCB
+	// 查询出FCB
+	err := FCBTable().FindOne(context.TODO(), bson.M{"_id": id}).Decode(&fcb)
+	if err != nil {
+		// FCB不存在
+		fmt.Println(err)
+		c.JSON(http.StatusOK, gin.H{
+			"msg":  "文件FCB不存在",
+			"code": 1,
+		})
+		return
+	}
+
+	// 插入Inode
+	// 生成当前时间的时间戳字符串
+	timestamp := fmt.Sprintf("%d", time.Now().Unix())
+	err = c.SaveUploadedFile(block, "./blocks/"+timestamp)
+
+	if err != nil {
+		c.JSON(http.StatusOK, gin.H{
+			"msg":  "文件块上传失败",
+			"code": 1,
+			"data": fcb,
+		})
+		return
+	}
+	// 插入节点
+	fcb.Inodes = append(fcb.Inodes, timestamp)
+
+	// 更新FCB,插入Inode节点名
+	FCBTable().UpdateOne(
+		context.TODO(),
+		bson.M{"_id": id},
+		bson.M{
+			"$set": bson.M{
+				"inodes": fcb.Inodes,
+			},
+		})
+
 	c.JSON(http.StatusOK, gin.H{
 		"msg":  "文件块上传成功",
 		"code": 0,
+		"data": fcb,
 	})
-	//file, err := c.FormFile("file")
-	//if err != nil {
-	//	c.JSON(http.StatusOK, gin.H{
-	//		"msg":  "文件上传失败",
-	//		"code": 1,
-	//	})
-	//	return
-	//}
 
 }

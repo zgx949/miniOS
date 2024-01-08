@@ -21,7 +21,6 @@
     <el-upload
         class="upload-demo"
         drag
-        action="https://run.mocky.io/v3/9d059bf9-4660-45f2-925d-ce80ad6c4d15"
         multiple
         v-model:file-list="fileList"
         :auto-upload="false"
@@ -73,9 +72,9 @@
         </div>
       </el-col>
       <el-col :xs="12" :sm="12" :md="6" :lg="6" :xl="6">
-        <div>
+        <div @click="emits('reload')">
           <el-button color="#C45DD5" class="fop" type="primary" :icon="Files"><span
-              style="color: #ffffff;">粘贴</span>
+              style="color: #ffffff;">刷新</span>
           </el-button>
         </div>
       </el-col>
@@ -92,7 +91,7 @@ import {
   DocumentAdd
 } from '@element-plus/icons-vue'
 
-const chunkSize = 1024*8 // 文件块大小8KB
+const chunkSize = 1024*1024*1 // 文件块大小1MB
 
 import {defineEmits, ref, defineProps} from 'vue'
 const props = defineProps({
@@ -100,6 +99,7 @@ const props = defineProps({
 })
 import {createFCB, upload} from "@/api/files"
 import {ElNotification} from "element-plus"
+import {buildChunkForm, getChunkCount, getFileMd5} from "@/utils/utils";
 const emits = defineEmits(['back', 'create', 'reload'])
 
 const newFileType = ref('folder') // 创建文件还是文件夹
@@ -136,15 +136,8 @@ const create = (FileName, FileType) => {
  * @param fileName 文件名称
  */
 const uploadFileToServer = async (fcbId, file, chunkNumber, chunkTotal, fileName) => {
-  const form = new FormData();
-  // 这里的data是文件
-  form.append("FCBId", fcbId);
-  form.append("file", file);
-  form.append("chunkNumber", chunkNumber);
-  form.append("chunkTotal", chunkTotal);
-  form.append("fileName", fileName)
-  // TODO:加入md5校验码
-  form.append("md5", 'md5');
+  // 构造表单
+  const form = await buildChunkForm(fcbId, file, chunkNumber, chunkTotal, fileName);
   let result = await upload(form)
   return result
 }
@@ -173,6 +166,7 @@ const handleChange = async (uploadFile, uploadFiles) => {
     })
     return
   }
+
   // debugger
   // FCB 创建成功
   const fid = res.data.data.InsertedID
@@ -186,30 +180,61 @@ const handleChange = async (uploadFile, uploadFiles) => {
 
   const fileSize = uploadFile.size || 0
   // 计算文件分块的总数
-  let chunkTotals = Math.ceil(fileSize / chunkSize);
+  let chunkTotals = getChunkCount(uploadFile) // 文件分块的总数
   let errorList = [] // 上传失败的文件块
   let successCount = 0 // 上传成功的文件块
   if (chunkTotals > 0) {
     // 上传文件分块
     for (let chunkNumber = 0, start = 0; chunkNumber < chunkTotals; chunkNumber++,  start += chunkSize) {
       let end = Math.min(fileSize, start + chunkSize);
+      // 切片
+
       const files = uploadFile.raw?.slice(start, end)
+      // 多线程上传
       const result = await uploadFileToServer(fid, files, chunkNumber+1, chunkTotals, fileName)
       if (result.error) {
         // 上传失败
-        errorList.push(chunkNumber)
+        errorList.push({
+          fid: fid,
+          files: files,
+          chunkNumber: chunkNumber + 1,
+          chunkTotals: chunkTotals,
+          fileName: fileName
+        })
+        continue
       }
       successCount++
-      // const percents = parseFloat(result.data.replace("%",''))
       const percents = (successCount / chunkTotals * 100).toFixed(2)
       uploadFile.percentage = percents
       tableData.value[index].percentage = percents
       console.log(result.data)
     }
   }
+  // 重传失败的文件块
+  while (errorList.length !== 0) {
+    // 从队头取出一个文件块
+    const error = errorList.shift()
+    const result = await uploadFileToServer(error.fid, error.files, error.chunkNumber, error.chunkTotals, error.fileName)
+    if (result.error) {
+      // 上传失败
+      errorList.push({
+        fid: error.fid,
+        files: error.files,
+        chunkNumber: error.chunkNumber,
+        chunkTotals: error.chunkTotals,
+        fileName: error.fileName
+      })
+      continue
+    }
+    successCount++
+    const percents = (successCount / chunkTotals * 100).toFixed(2)
+    uploadFile.percentage = percents
+    tableData.value[index].percentage = percents
+    console.log(result.data)
+  }
+
   emits('reload')
   console.log(uploadFiles)
-
 }
 
 </script>

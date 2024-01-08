@@ -1,5 +1,6 @@
 import axios from 'axios';
 const baseUrl = ''
+// const baseUrl = 'http://win.lefthand.top'
 // 封装get请求
 function get(url, params) {
   return axios({
@@ -20,6 +21,16 @@ function post(url, data) {
   })
 }
 
+// 封装postForm请求
+function postForm(url, data) {
+  return axios({
+    method: 'post',
+    url: baseUrl + url,
+    data: data,
+    header: {"token": localStorage.getItem("token")}
+  })
+}
+
 function del(url, data) {
   return axios({
     method: 'delete',
@@ -32,5 +43,6 @@ function del(url, data) {
 export default {
   get,
   post,
-  del
+  del,
+  postForm
 };
