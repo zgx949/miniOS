@@ -14,4 +14,5 @@ func SetFCBRouter(fileGroup *gin.RouterGroup) {
 	fileGroup.POST("create", models.InsertFCB)
 	fileGroup.GET("list/:parentId", models.FolderList)
 	fileGroup.DELETE(":Id", models.DelFCB)
+	fileGroup.POST("upload", models.UploadFile)
 }

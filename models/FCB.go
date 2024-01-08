@@ -170,3 +170,20 @@ func DelFCB(c *gin.Context) {
 	// TODO：删除该FCB的子目录及Inode节点
 
 }
+
+func UploadFile(c *gin.Context) {
+	// 获取文件块
+	c.JSON(http.StatusOK, gin.H{
+		"msg":  "文件块上传成功",
+		"code": 0,
+	})
+	//file, err := c.FormFile("file")
+	//if err != nil {
+	//	c.JSON(http.StatusOK, gin.H{
+	//		"msg":  "文件上传失败",
+	//		"code": 1,
+	//	})
+	//	return
+	//}
+
+}

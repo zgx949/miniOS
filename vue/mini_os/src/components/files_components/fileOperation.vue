@@ -16,6 +16,39 @@
     </template>
   </el-dialog>
 
+  <!-- 上传文件窗口 -->
+  <el-dialog v-model="dialogUploadVisible" title="上传文件" width="80%">
+    <el-upload
+        class="upload-demo"
+        drag
+        action="https://run.mocky.io/v3/9d059bf9-4660-45f2-925d-ce80ad6c4d15"
+        multiple
+        v-model:file-list="fileList"
+        :auto-upload="false"
+        :on-change="handleChange"
+    >
+      <el-icon class="el-icon--upload"><upload-filled /></el-icon>
+      <div class="el-upload__text">
+        拖到此处 或 <em>选择文件</em>
+      </div>
+      <template #tip>
+        <div class="el-upload__tip">
+          不限制文件和大小，支持断点续传
+        </div>
+      </template>
+    </el-upload>
+
+    <el-table :data="tableData" stripe style="width: 100%">
+      <el-table-column prop="name" label="名字"/>
+      <el-table-column prop="percentage" label="进度">
+        <template #default="scope">
+          <el-progress :text-inside="true" :stroke-width="26" :percentage="scope.row.percentage" />
+        </template>
+      </el-table-column>
+    </el-table>
+  </el-dialog>
+
+  <!-- 操作面版 -->
   <div>
     <el-row :gutter="10">
       <el-col :xs="12" :sm="12" :md="6" :lg="6" :xl="6">
@@ -27,16 +60,16 @@
 
       </el-col>
       <el-col :xs="12" :sm="12" :md="6" :lg="6" :xl="6">
-        <div>
+        <div @click="dialogUploadVisible = true">
           <el-button color="#C45DD5" class="fop" type="primary" :icon="UploadFilled"><span
               style="color: #ffffff;">上传</span>
           </el-button>
         </div>
       </el-col>
       <el-col :xs="12" :sm="12" :md="6" :lg="6" :xl="6">
-        <div>
-        <el-button color="#C45DD5" class="fop" type="primary" :icon="DocumentAdd"><span
-            style="color: #ffffff;" @click="dialogFormVisible=true">新建</span></el-button>
+        <div @click="dialogFormVisible=true">
+          <el-button color="#C45DD5" class="fop" type="primary" :icon="DocumentAdd"><span
+              style="color: #ffffff;">新建</span></el-button>
         </div>
       </el-col>
       <el-col :xs="12" :sm="12" :md="6" :lg="6" :xl="6">
@@ -59,14 +92,24 @@ import {
   DocumentAdd
 } from '@element-plus/icons-vue'
 
-import {defineEmits, ref} from 'vue'
-import {createFCB} from "@/api/files";
-import {ElNotification} from "element-plus";
-const emits = defineEmits(['back', 'create'])
+const chunkSize = 1024*8 // 文件块大小8KB
+
+import {defineEmits, ref, defineProps} from 'vue'
+const props = defineProps({
+  folderId: String // 文件夹id
+})
+import {createFCB, upload} from "@/api/files"
+import {ElNotification} from "element-plus"
+const emits = defineEmits(['back', 'create', 'reload'])
 
 const newFileType = ref('folder') // 创建文件还是文件夹
 
 const createDirName = ref('') // 新建文件名
+
+const tableData = ref([]) // 上传文件列表信息
+
+const fileList = ref([]) // 上传文件列表
+
 
 const back = () => {
   emits('back')
@@ -74,23 +117,110 @@ const back = () => {
 // 新建弹窗
 const dialogFormVisible = ref(false)
 
+// 上传文件弹窗
+const dialogUploadVisible = ref(false)
+
 // 创建一个FCB
 const create = (FileName, FileType) => {
   emits('create', FileName, FileType)
   dialogFormVisible.value = false
 }
 
+
+/**
+ * 将分块文件上传至服务器
+ * @param fcbId
+ * @param file 上传的分块文件
+ * @param chunkNumber 当前是第几块
+ * @param chunkTotal 文件分块的总数
+ * @param fileName 文件名称
+ */
+const uploadFileToServer = async (fcbId, file, chunkNumber, chunkTotal, fileName) => {
+  const form = new FormData();
+  // 这里的data是文件
+  form.append("FCBId", fcbId);
+  form.append("file", file);
+  form.append("chunkNumber", chunkNumber);
+  form.append("chunkTotal", chunkTotal);
+  form.append("fileName", fileName)
+  // TODO:加入md5校验码
+  form.append("md5", 'md5');
+  let result = await upload(form)
+  return result
+}
+
+/**
+ * el-upload内置的change函数，文件上传或者上传成功时的回调，不过这里因为
+ * :auto-upload="false"的缘故，上床成功的回调不会执行
+ * @param uploadFile el-upload当前上传的文件对象
+ * @param uploadFiles el-upload上传的文件列表
+ */
+const handleChange = async (uploadFile, uploadFiles) => {
+
+  const res = await createFCB({
+    FileName: uploadFile.name,
+    FileType: 'file',
+    parentId: props.folderId === 'root' ? null : props.folderId,
+    FileSize: uploadFile.size
+  })
+  // debugger
+  if (res.data.code !== 0) {
+    // FCB 创建失败
+    ElNotification({
+      title: '文件系统',
+      message: res.data.msg,
+      type: 'error',
+    })
+    return
+  }
+  // debugger
+  // FCB 创建成功
+  const fid = res.data.data.InsertedID
+
+  tableData.value.push({...uploadFile})
+
+  const index = tableData.value.findIndex(item => item.uid === uploadFile.uid)
+
+  let fileName = uploadFile.name
+
+
+  const fileSize = uploadFile.size || 0
+  // 计算文件分块的总数
+  let chunkTotals = Math.ceil(fileSize / chunkSize);
+  let errorList = [] // 上传失败的文件块
+  let successCount = 0 // 上传成功的文件块
+  if (chunkTotals > 0) {
+    // 上传文件分块
+    for (let chunkNumber = 0, start = 0; chunkNumber < chunkTotals; chunkNumber++,  start += chunkSize) {
+      let end = Math.min(fileSize, start + chunkSize);
+      const files = uploadFile.raw?.slice(start, end)
+      const result = await uploadFileToServer(fid, files, chunkNumber+1, chunkTotals, fileName)
+      if (result.error) {
+        // 上传失败
+        errorList.push(chunkNumber)
+      }
+      successCount++
+      // const percents = parseFloat(result.data.replace("%",''))
+      const percents = (successCount / chunkTotals * 100).toFixed(2)
+      uploadFile.percentage = percents
+      tableData.value[index].percentage = percents
+      console.log(result.data)
+    }
+  }
+  emits('reload')
+  console.log(uploadFiles)
+
+}
+
 </script>
 
 <style scoped>
 .fop {
-  /*background-color: #4CAF50;*/
   background-color: #C45DD5;
   border: none;
   color: white;
   text-align: center;
   text-decoration: none;
-  /*display: inline-block;*/
   font-size: 16px;
   margin: 4px 2px;
   cursor: pointer;
