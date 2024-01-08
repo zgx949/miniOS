@@ -2,7 +2,7 @@
   <el-table
       :data="filterTableData"
       style="width: 100%; color: #000000;"
-      height="400"
+      height="100vh"
       :header-cell-style="{ color: '#000000' }"
   >
     <el-table-column label="文件名" prop="fileName" width="250">
