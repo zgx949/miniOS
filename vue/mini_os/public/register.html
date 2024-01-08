@@ -8,6 +8,7 @@
     <link rel="stylesheet" href="https://cdn.dowebok.com/tailwindcss/2.2.19/tailwind.min.css" />
     <link rel="stylesheet" href="https://cdn.dowebok.com/font-awesome/4.7.0/css/font-awesome.min.css" />
     <link rel="stylesheet" href="https://www.dowebok.com/demo/8655/css/style.css" />
+    <script src="https://unpkg.com/axios/dist/axios.min.js"></script>
 </head>
 <body class="h-screen bg-gradient-to-tr from-yellow-300 to-pink-300">
 <div class="flex">
@@ -56,12 +57,57 @@
                 <label for="agree" class="text-xs align-middle text-gray-500">同意<a class="text-blue-500 hover:text-blue-700" href="javascript:">《网站注册协议》</a></label>
             </div>
             <div class="mt-6">
-                <button class="block w-full max-w-xs mx-auto bg-pink-500 hover:bg-pink-600 focus:bg-pink-600 text-white rounded-lg px-10 py-3">创建账号</button>
+                <button class="block w-full max-w-xs mx-auto bg-pink-500 hover:bg-pink-600 focus:bg-pink-600 text-white rounded-lg px-10 py-3" onclick="register()">创建账号</button>
             </div>
             <div class="mt-6 text-center text-xs text-gray-500">已有账号？<a class="text-blue-500 hover:text-blue-700" href="/">立即登录</a></div>
         </div>
     </div>
 </div>
+<script>
+function register() {
+    const username = document.getElementById("username").value
+    if (username === null || username === '') {
+        alert('请输入用户名')
+        return
+    }
+    const password = document.getElementById("password").value
+    if (password === null || password === '') {
+        alert('请输入密码')
+        return
+    }
+    const password2 = document.getElementById("password2").value
+    if (password !== password2) {
+        alert('两次密码输入不一致')
+        return
+    }
+    const email = document.getElementById("email").value
+    if (email === null || email === '') {
+        alert('请输入邮箱')
+        return
+    }
 
+    axios.post('/api/users/register', JSON.stringify(
+        {
+            "Username": username,
+            "Password": password,
+            "email": email
+        })).then(function (res) {
+            console.log(res);
+            // 注册成功
+            if (res.data.code === 0) {
+                alert(res.data.msg)
+                localStorage.setItem('token', res.data.data.InsertedID)
+                location.href = '/'
+            } else {
+                alert(res.data.msg)
+            }
+        })
+        .catch(function (error) {
+            console.log(error);
+        });
+
+}
+
+</script>
 </body>
 </html>
