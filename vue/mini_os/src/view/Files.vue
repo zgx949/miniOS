@@ -1,7 +1,7 @@
 <template>
 	<div class="files">
 
-		<div>
+		<div style="background-color: #ffffff">
 			<el-text style="color: #000000; font-size: large;">当前目录: </el-text>
       <span style="color: #000000">{{ path }}</span>
       <!-- 操作菜单   -->

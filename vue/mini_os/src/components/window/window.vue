@@ -148,14 +148,14 @@ const fullScreen = () => {
   left: calc(50% - v-bind("props.width") / 2);
   top: calc(50% - v-bind("props.height") / 2);
   box-sizing: border-box;
-  padding: 8px;
+  padding: 4px;
   overflow: hidden;
   color: #fff;
   min-width: 200px;
   min-height: 200px;
   max-width: 100vw;
   max-height: 100vh;
-  background-color: #ffffff;
+  background-color: #ecf5ff;
 }
 
 .drag-bar {
@@ -165,8 +165,10 @@ const fullScreen = () => {
   border-bottom: 1px solid #fff;
   box-sizing: border-box;
   padding: 1px 2px 9px;
-  background-color: #ffffff;
+  background-color: #ecf5ff;
   border-bottom-color: #000000;
+  /*text-align: center;*/
+  font-weight: 800;
 }
 
 .drag-btn {
@@ -199,6 +201,10 @@ const fullScreen = () => {
 }
 .drag-win-enter-active,
 .drag-win-leave-active {
-  transition: all 0.5s ease;
+  /* 动画从上面展开，收缩时到中间 */
+  transform-origin: bottom center;
+  /*transform-origin: bottom left;*/
+  transition: all 0.3s ease;
+
 }
 </style>
