@@ -1,6 +1,7 @@
 package models
 
 import (
+	"bytes"
 	"context"
 	"fileSys/config"
 	"fmt"
@@ -9,7 +10,9 @@ import (
 	"go.mongodb.org/mongo-driver/bson/primitive"
 	"go.mongodb.org/mongo-driver/mongo"
 	"go.mongodb.org/mongo-driver/mongo/options"
+	"io"
 	"net/http"
+	"os"
 	"time"
 )
 
@@ -172,6 +175,7 @@ func DelFCB(c *gin.Context) {
 
 }
 
+// UploadFile 上传文件块
 func UploadFile(c *gin.Context) {
 	// 获取文件ID
 	FCBId, _ := c.GetPostForm("FCBId")
@@ -227,4 +231,44 @@ func UploadFile(c *gin.Context) {
 		"data": fcb,
 	})
 
+}
+
+// DownloadFile 下载文件块
+func DownloadFile(c *gin.Context) {
+	// 获取文件ID
+	id, _ := primitive.ObjectIDFromHex(c.Param("Id"))
+	// 查询出FCB
+	var fcb FCB
+	err := FCBTable().FindOne(context.TODO(), bson.M{"_id": id}).Decode(&fcb)
+	if err != nil {
+		c.JSON(http.StatusNotFound, gin.H{
+			"msg":  "文件FCB不存在",
+			"code": 1,
+		})
+		return
+	}
+
+	// 读取文件块
+	var buffer bytes.Buffer
+	for _, inode := range fcb.Inodes {
+		filePath := fmt.Sprintf("%s/%s", "D:/codes/fileSys/blocks", inode)
+		fmt.Println("路径：", filePath)
+		file, err := os.Open(filePath)
+		if err != nil {
+			c.AbortWithError(http.StatusInternalServerError, err)
+			return
+		}
+		defer file.Close()
+
+		// 将文件内容复制到缓冲区
+		if _, err := io.Copy(&buffer, file); err != nil {
+			c.AbortWithError(http.StatusInternalServerError, err)
+			return
+		}
+	}
+
+	c.Header("Content-Disposition", fmt.Sprintf("attachment; filename=%s", fcb.FileName))
+	c.Header("Content-Type", "application/octet-stream")
+	// 发送整个缓冲区内容作为响应体
+	c.DataFromReader(http.StatusOK, int64(buffer.Len()), "application/octet-stream", &buffer, nil)
 }
