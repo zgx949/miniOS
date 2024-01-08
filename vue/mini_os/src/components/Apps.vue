@@ -1,46 +1,22 @@
 <template>
-	<el-dialog 
-		v-model="dialogVisible" 
-		:title="title" 
-		draggable="true" 
-		:modal="false" 
-		:width="width"
-    :fullscreen="fullscreen"
-    :show-close="false"
-		>
-    <template #header="{ close, titleId, titleClass }">
-      <div class="my-header">
-        <el-row :gutter="0">
-          <el-col :xs="0" :sm="0" :md="8" :lg="4" :xl="4">
-            <div v-html="svgIcon" style="display: inline; height: 10px; "></div>
-          </el-col>
-          <el-col :xs="4" :sm="4" :md="8" :lg="16" :xl="16">
-            <div style="text-align: center">{{ title }}</div>
-          </el-col>
-          <el-col :xs="20" :sm="20" :md="8" :lg="4" :xl="4">
-            <el-button text :icon="Minus" @click="() => {dialogVisible=false;fileApp=false;}" />
-            <el-button text :icon="CopyDocument" @click="fullscreen=!fullscreen" />
-            <el-button type="danger" text :icon="Close" @click="() => {dialogVisible=false;fileApp=false;}" />
-          </el-col>
-        </el-row>
-      </div>
+  <Window v-model:model-value="dialogVisible" width="80%" :height="innerHeight">
+    <template v-slot:head>
+      <span style="color: #000000">{{ title }}</span>
     </template>
-
-		<div v-loading="loading">
-			<iframe
-        v-if="url !== ''"
-				:src="url" 
-				ref="myIframe" 
-				frameborder="0" 
-				:height="innerHeight"
-				width="95%"
-        :style="'height: ' + innerHeight + 'px'"
-				@load="onIframeLoad" 
-        @error="onIframeError"/>
+    <div v-loading="loading">
+      <iframe
+          v-if="url !== ''"
+          :src="url"
+          ref="myIframe"
+          frameborder="0"
+          :height="innerHeight"
+          width="95%"
+          :style="'height: ' + innerHeight + 'px'"
+          @load="onIframeLoad"
+          @error="onIframeError"/>
       <Files v-else></Files>
-		</div>
-	</el-dialog>
-
+    </div>
+  </Window>
   <div class="desk">
 	        <div class="apps">
                 <!-- 桌面应用展示 -->
@@ -54,6 +30,7 @@
 </template>
 
 <script setup>
+// import { BoxWin } from 'box-win'
 import {
   Minus,
     Close,
@@ -63,6 +40,7 @@ import {ref, reactive, computed, watch, defineAsyncComponent, onMounted, defineE
 const emits = defineEmits(["loaded"])
 import Files from '@/view/Files.vue'
 import { listApp } from '@/api/apps'
+import Window from "@/components/window/window.vue";
 const dialogVisible = ref(false)
 const myIframe = ref(null)
 const loading = ref(true) // 用于记录 iframe 是否已加载完成

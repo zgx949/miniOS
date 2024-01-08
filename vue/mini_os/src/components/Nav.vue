@@ -80,7 +80,7 @@ const login_out = ()=> {
 
 <style>
 	.el-drawer {
-	  background-image: url("https://win12online.com/background/bg-light.svg");
+	  background-image: url("/bg-light.svg");
 	  background-size: cover;
 
 	}
