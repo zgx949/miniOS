@@ -3,7 +3,6 @@ import { ref, onMounted, onBeforeMount } from "vue";
 import Apps from '@/components/Apps.vue'
 import Nav from '@/components/Nav.vue'
 import { ElNotification, ElLoading } from "element-plus";
-const fullscreenLoading = ref(true)  // 全屏加载
 // 加载完成
 const loaded = () => {
   loading.close()
@@ -13,10 +12,11 @@ const loaded = () => {
     type: 'success',
   })
 }
-
+const openList = ref(null)
 var loading = null
 var startTime = 0
 var timer = null
+
 onBeforeMount(() => {
   loading = ElLoading.service({
     lock: true,
@@ -28,6 +28,16 @@ onBeforeMount(() => {
   }, 1)
 })
 
+// 打开的应用发生变化
+const openAppChange = (data) => {
+  openList.value = data
+}
+// 最大化APP
+const appsRef = ref(null)
+const showApp = (index)=> {
+  // 向Apps组件发起调用最大化窗口
+  appsRef.value.show(index)
+}
 
 onMounted(() => {
 
@@ -37,26 +47,22 @@ onMounted(() => {
 </script>
 
 <template>
-
-  <!--	<el-watermark :font="font" :content="['左手文件系统']">-->
-
-
   <div class="header">
     <h1>左手网盘-Windows13版</h1>
   </div>
 
   <el-row :gutter="10">
     <el-col :xs="24" :sm="24" :md="24" :lg="24" :xl="24">
-      <Apps @loaded="loaded"></Apps>
+      <Apps @loaded="loaded" @openAppChange="openAppChange" ref="appsRef"></Apps>
     </el-col>
-
   </el-row>
 
   <el-row>
-    <div class="fixed-bottom"><Nav></Nav></div>
+    <div class="fixed-bottom">
+      <Nav :openList="openList" @show="showApp"></Nav>
+    </div>
   </el-row>
 
-  <!--	</el-watermark>-->
 </template>
 
 <style>

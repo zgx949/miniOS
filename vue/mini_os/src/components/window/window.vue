@@ -21,6 +21,11 @@
             @click="fullScreen"
             v-if="props.fullShow"
         />
+
+        <el-button text :icon="Minus"
+                   class="drag-btn"
+                   @click="hide"
+        />
       </div>
       <!-- 拖拽框主要部分 -->
       <div class="drag-main" :style="props.mainStyle">
@@ -81,13 +86,19 @@ const recordBox: recordType = {
 //获取窗口实体
 const dragWin: any = ref(null);
 // 事件定义
-const emits = defineEmits(["update:modelValue"]);
+const emits = defineEmits(["update:modelValue", "close", "hide"]);
 
 /** 方法定义 */
 // 内部控制窗口开关
 const controlDialog = () => {
   emits("update:modelValue", !props.modelValue);
-};
+  emits("closeWindow")
+}
+
+// 隐藏窗口
+const hide = () => {
+  emits("hide")
+}
 
 // 全屏控件
 const fullScreen = () => {

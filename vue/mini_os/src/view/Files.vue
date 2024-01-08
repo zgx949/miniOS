@@ -17,7 +17,8 @@
 <script setup>
 import fileOperation from '@/components/files_components/fileOperation.vue'
 import filesTable from '@/components/files_components/filesTable.vue'
-import {computed, ref, onMounted, watch} from 'vue'
+import {computed, ref, onMounted, watch, defineEmits} from 'vue'
+const emits = defineEmits(["loaded"])
 import { ElNotification } from 'element-plus'
 import {createFCB, list} from "@/api/files";
 const dialogFormVisible = ref(false)
@@ -80,6 +81,7 @@ const loadData = (id) => {
       tableData.value = data
     }
     loading.value = false
+
   })
 }
 // 后退文件夹
@@ -133,6 +135,7 @@ const create = (FileName, FileType) => {
 
 onMounted(() => {
   loadData(parentId.value[0])
+
 })
 
 
