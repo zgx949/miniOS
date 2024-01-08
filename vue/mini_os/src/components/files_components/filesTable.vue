@@ -59,7 +59,7 @@ import {
   Folder,
   Document,
 } from '@element-plus/icons-vue'
-import {delFCB} from "@/api/files";
+import {delFCB, getDownloadUrl} from "@/api/files";
 
 const tableData =  defineProps({
   data: Array
@@ -113,6 +113,7 @@ const handleDownload = (index, row) => {
     message: '正在获取下载链接',
     type: 'info',
   })
+  window.open(getDownloadUrl(row._id))
   console.log(index, row)
 }
 
