@@ -6,6 +6,7 @@ const baseUrl = "http://localhost:8080"
 export default defineConfig({
   plugins: [vue()],
   server: {
+    host: '0.0.0.0',
     https: false,
     proxy: {
       '/api': {
