@@ -41,7 +41,11 @@
       <template #default="scope">
         <el-button size="small" type="success" @click="handleShare(scope.$index, scope.row)">分享</el-button>
         <el-button size="small" type="primary" @click="handleDownload(scope.$index, scope.row)" :disabled="scope.row.fileType === 'folder'">下载</el-button>
-        <el-button size="small" type="danger" @click="handleDelete(scope.$index, scope.row)">删除</el-button>
+        <el-popconfirm title="确定要删除吗？" @confirm="handleDelete(scope.$index, scope.row)">
+          <template #reference>
+            <el-button size="small" type="danger">删除</el-button>
+          </template>
+        </el-popconfirm>
       </template>
     </el-table-column>
   </el-table>

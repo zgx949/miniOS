@@ -1,6 +1,6 @@
 <template>
   <!-- 新建文件窗口 -->
-  <el-dialog v-model="dialogFormVisible" title="新建文件/文件夹">
+  <el-dialog v-model="dialogFormVisible" title="新建文件/文件夹" width="80%">
     <el-radio-group v-model="newFileType">
       <el-radio :label="'folder'">文件夹</el-radio>
       <el-radio :label="'file'">文件</el-radio>
@@ -19,23 +19,32 @@
   <div>
     <el-row :gutter="10">
       <el-col :xs="12" :sm="12" :md="6" :lg="6" :xl="6">
-        <el-button color="#C45DD5" class="fop" type="primary" :icon="ArrowLeftBold"><span
-            style="color: #ffffff;" @click="back">后退</span>
-        </el-button>
+        <div @click="back">
+          <el-button color="#C45DD5" class="fop" type="primary" :icon="ArrowLeftBold"><span
+              style="color: #ffffff;">后退</span>
+          </el-button>
+        </div>
+
       </el-col>
       <el-col :xs="12" :sm="12" :md="6" :lg="6" :xl="6">
-        <el-button color="#C45DD5" class="fop" type="primary" :icon="UploadFilled"><span
-            style="color: #ffffff;">上传</span>
-        </el-button>
+        <div>
+          <el-button color="#C45DD5" class="fop" type="primary" :icon="UploadFilled"><span
+              style="color: #ffffff;">上传</span>
+          </el-button>
+        </div>
       </el-col>
       <el-col :xs="12" :sm="12" :md="6" :lg="6" :xl="6">
+        <div>
         <el-button color="#C45DD5" class="fop" type="primary" :icon="DocumentAdd"><span
             style="color: #ffffff;" @click="dialogFormVisible=true">新建</span></el-button>
+        </div>
       </el-col>
       <el-col :xs="12" :sm="12" :md="6" :lg="6" :xl="6">
-        <el-button color="#C45DD5" class="fop" type="primary" :icon="Files"><span
-            style="color: #ffffff;">粘贴</span>
-        </el-button>
+        <div>
+          <el-button color="#C45DD5" class="fop" type="primary" :icon="Files"><span
+              style="color: #ffffff;">粘贴</span>
+          </el-button>
+        </div>
       </el-col>
 
     </el-row>
@@ -68,6 +77,7 @@ const dialogFormVisible = ref(false)
 // 创建一个FCB
 const create = (FileName, FileType) => {
   emits('create', FileName, FileType)
+  dialogFormVisible.value = false
 }
 
 </script>

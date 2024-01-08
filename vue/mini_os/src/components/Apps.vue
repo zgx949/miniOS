@@ -102,6 +102,7 @@ const open = (app)=> {
 // 关闭窗口
 const closeWindow = (index) => {
   openList.splice(index, 1)
+  loading.value = true
 }
 
 // 隐藏窗口

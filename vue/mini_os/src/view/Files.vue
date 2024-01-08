@@ -3,7 +3,7 @@
 
 		<div>
 			<el-text style="color: #000000; font-size: large;">当前目录: </el-text>
-      <span>{{ path }}</span>
+      <span style="color: #000000">{{ path }}</span>
       <!-- 操作菜单   -->
       <fileOperation @back="back" @create="create"></fileOperation>
 		</div>
