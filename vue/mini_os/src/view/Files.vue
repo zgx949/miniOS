@@ -41,19 +41,17 @@ const openFolder = (id, dirName)=> {
 
 const tableData = ref([
   {
-    "_id": "65994c104379f4da38c8e221",
-    "creationTime": "0001-01-01T00:00:00Z",
-    "fileLocation": 0,
-    "fileName": "123.txt",
-    "fileSize": 0,
-    "fileType": "file",
-    "group": 0,
-    "inodeNumber": 0,
-    "modificationTime": "0001-01-01T00:00:00Z",
+    "file_name": "视频",
+    "file_size": 0,
+    "parent_id": 1,
+    "creation_time": null,
+    "modification_time": null,
+    "permissions": null,
     "owner": 0,
-    "parentId": "65994c2c4379f4da38c8e222",
-    "permissions": ""
-  }
+    "group": 0,
+    "file_type": "folder",
+    "id": 12
+  },
 ]) // 文件目录
 const parentId = ref(["root"]) // 文件夹id队列
 
@@ -77,7 +75,7 @@ const loadData = (id) => {
       if (!data) {
         data = []
       }
-      data.sort((a, b) => b.fileType.localeCompare(a.fileType))
+      data.sort((a, b) => b.file_type.localeCompare(a.file_type))
       tableData.value = data
     }
     loading.value = false

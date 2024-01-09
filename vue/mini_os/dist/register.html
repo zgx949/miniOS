@@ -96,7 +96,7 @@ function register() {
             // 注册成功
             if (res.data.code === 0) {
                 alert(res.data.msg)
-                localStorage.setItem('token', res.data.data.InsertedID)
+                // localStorage.setItem('token', res.data.data.InsertedID)
                 location.href = '/'
             } else {
                 alert(res.data.msg)

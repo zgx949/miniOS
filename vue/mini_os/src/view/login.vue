@@ -1,21 +1,5 @@
 
 <template>
-<!--  <div class="login-container">-->
-<!--    <el-form ref="loginForm" :model="form" :rules="rules" label-width="100px" @submit.prevent="handleSubmit">-->
-<!--      <el-form-item label="用户名" prop="username">-->
-<!--        <el-input v-model="form.username" placeholder="请输入用户名"></el-input>-->
-<!--      </el-form-item>-->
-<!--      <el-form-item label="密码" prop="password">-->
-<!--        <el-input type="password" v-model="form.password" placeholder="请输入密码"></el-input>-->
-<!--      </el-form-item>-->
-<!--      <el-form-item>-->
-<!--        <el-button type="primary" @click="handleSubmit">登录</el-button>-->
-<!--      </el-form-item>-->
-<!--    </el-form>-->
-<!--  </div>-->
-
-
-
   <div class="dowebok limiter">
     <div class="container-login100">
       <div class="wrap-login100 p-t-190 p-b-30">
@@ -91,7 +75,7 @@ const handleSubmit = () => {
     // debugger
     if (res.data.code === 0) {
       // 登录成功
-      localStorage.setItem('token', res.data.data.ID)
+      // localStorage.setItem('token', res.data.data.ID)
       localStorage.setItem('userInfo', JSON.stringify(res.data.data))
       ElNotification({
         title: '系统提示',

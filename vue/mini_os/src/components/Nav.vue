@@ -70,6 +70,7 @@ import info from './info.vue'
 import start from './start.vue'
 import setting from './setting.vue'
 import { useRouter } from 'vue-router';
+import {userLogout} from "@/api/users";
 const router = useRouter()
 const drawer = ref(false)
 const opts = ['info', 'start', 'setting']
@@ -78,12 +79,16 @@ const opt = ref('')
 //  退出登录
 const login_out = ()=> {
   localStorage.clear()
-  ElNotification({
-    title: '系统消息',
-    message: '退出系统成功',
-    type: 'warning',
+  userLogout().then(res => {
+    ElNotification({
+      title: '系统消息',
+      message: `${res.data.msg}`,
+      type: 'warning',
+    })
+    router.push({'name': 'Login'})
   })
-  router.push({'name': 'Login'})
+
+
 }
 
 // 显示APP

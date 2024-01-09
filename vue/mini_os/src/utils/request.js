@@ -1,6 +1,28 @@
 import axios from 'axios';
+import {ElNotification} from "element-plus";
 const baseUrl = ''
 // const baseUrl = 'http://win.lefthand.top'
+// 响应拦截器
+axios.interceptors.response.use(
+    function (response) {
+      // 对响应数据进行操作
+      if (response.data.code === -1) {
+        ElNotification({
+          title: '系统提示',
+          message: `登录已经过期，请重新登录`,
+          type: 'error',
+        })
+        localStorage.clear()
+        window.location.href = '/login'
+      }
+      return response;
+    },
+    function (error) {
+      // 对响应错误进行操作
+      return Promise.reject(error);
+    }
+)
+
 // 封装get请求
 function get(url, params) {
   return axios({
@@ -13,11 +35,10 @@ function get(url, params) {
 
 // 封装post请求
 function post(url, data) {
-  return axios({
-    method: 'post',
-    url: baseUrl + url,
-    data: JSON.stringify(data),
-    header: {"token": localStorage.getItem("token")}
+  return axios.post(baseUrl + url, JSON.stringify(data),{
+    headers: {
+      'Content-Type': 'application/json'
+    }
   })
 }
 
@@ -39,6 +60,9 @@ function del(url, data) {
     header: {"token": localStorage.getItem("token")}
   })
 }
+
+
+
 
 export default {
   get,

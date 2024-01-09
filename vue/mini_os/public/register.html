@@ -88,15 +88,19 @@ function register() {
 
     axios.post('/api/users/register', JSON.stringify(
         {
-            "Username": username,
-            "Password": password,
+            "username": username,
+            "password": password,
             "email": email
-        })).then(function (res) {
+        }),{
+        headers: {
+            'Content-Type': 'application/json'
+        }
+    }).then(function (res) {
             console.log(res);
             // 注册成功
             if (res.data.code === 0) {
                 alert(res.data.msg)
-                localStorage.setItem('token', res.data.data.InsertedID)
+                // localStorage.setItem('token', res.data.data.InsertedID)
                 location.href = '/'
             } else {
                 alert(res.data.msg)
