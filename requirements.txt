@@ -2,7 +2,10 @@ asgiref==3.7.2
 Django==4.2.8
 django-simpleui==2023.12.12
 dnspython==2.4.2
-pymongo==4.6.1
+mysql==0.0.3
+mysqlclient==2.2.1
+PyMySQL==1.1.0
 sqlparse==0.4.4
+types-mysqlclient==2.2.0.1
 typing_extensions==4.9.0
 tzdata==2023.3
