@@ -21,7 +21,8 @@
             @load="onIframeLoad"
           />
       </div>
-      <Files v-else></Files>
+      <Files v-else-if="app.component === 'Files'"></Files>
+      <AppMarket v-else-if="app.component === 'AppMarket'" @reloadApps="loadData" />
     </Window>
   </div>
 
@@ -46,6 +47,8 @@ const emits = defineEmits(["loaded", "openAppChange"])
 import Files from '@/view/Files.vue'
 import { listApp } from '@/api/apps'
 import Window from "@/components/window/window.vue";
+import AppMarket from "@/view/AppMarket.vue";
+
 const myIframe = ref(null)
 const loading = ref(true) // 用于记录 iframe 是否已加载完成
 const component = ref('Files')
@@ -63,20 +66,28 @@ const onIframeLoad = ()=> {
   loading.value = false // iframe 加载完成，将状态设置为 true
 }
 
-onMounted(() => {
+// 加载数据
+const loadData = async ()=> {
   listApp().then(res => {
     if (res.data.code === 0) {
       apps.value = res.data.data
-      for (let i = 0; i < apps.value.length; i++) {
-        const item = apps.value[i]
-        item['dialogVisible'] = false
-        item['opened'] = false
-      }
-      // 发送加载完成
-      emits("loaded", true)
     }
   })
+}
+
+onMounted(() => {
+  loadData().then(() => {
+    for (let i = 0; i < apps.value.length; i++) {
+      const item = apps.value[i]
+      item['dialogVisible'] = false
+      item['opened'] = false
+    }
+    // 发送加载完成
+    emits("loaded", true)
+  })
+
 })
+
 // app信息
 const apps = ref([
   {
