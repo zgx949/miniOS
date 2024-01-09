@@ -2,7 +2,7 @@
 <project version="4">
   <component name="ProjectModuleManager">
     <modules>
-      <module fileurl="file://$PROJECT_DIR$/.idea/fileSys.iml" filepath="$PROJECT_DIR$/.idea/fileSys.iml" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/pyOS.iml" filepath="$PROJECT_DIR$/.idea/pyOS.iml" />
     </modules>
   </component>
 </project>
