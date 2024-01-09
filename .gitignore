@@ -1,3 +1,4 @@
 /vue/mini_os/node_modules/
 /back/
 *migrations/
+db.sqlite3
