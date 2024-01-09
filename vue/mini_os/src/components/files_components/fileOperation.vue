@@ -169,7 +169,7 @@ const handleChange = async (uploadFile, uploadFiles) => {
 
   // debugger
   // FCB 创建成功
-  const fid = res.data.data.InsertedID
+  const fid = res.data.data.id
 
   tableData.value.push({...uploadFile})
 

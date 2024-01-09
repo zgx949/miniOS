@@ -59,7 +59,7 @@ import {
   Folder,
   Document,
 } from '@element-plus/icons-vue'
-import {delFCB, getDownloadUrl} from "@/api/files";
+import {delFCB, getDownloadUrl, getOpenUrl} from "@/api/files";
 
 const tableData =  defineProps({
   data: Array
@@ -123,15 +123,18 @@ const open = (row) => {
   if (row.file_type === 'folder') {
     // 改变当前路径ID
     emits('openFolder', row.id, row.file_name)
-
     return
+  } else {
+    // 打开文件
+    ElNotification({
+      title: '文件系统',
+      message: `打开文件：${row.file_name}`,
+      type: 'success',
+    })
+    window.open(getOpenUrl(row.id))
   }
 
-  ElNotification({
-    title: '文件系统',
-    message: `打开文件：${row.file_name}`,
-    type: 'success',
-  })
+
 
 
 }
