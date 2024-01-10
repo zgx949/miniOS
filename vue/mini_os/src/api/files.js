@@ -14,3 +14,5 @@ export const upload = (data) => request.postForm(`/api/file/upload`, data)
 export const getDownloadUrl = (id, filename) => {return `/api/file/download/${id}/${filename}`}
 
 export const getOpenUrl = (id) => {return `/api/file/open/${id}`}
+
+export const getPreviewUrl = (url) => {return `/viewer/?file=${url}`}

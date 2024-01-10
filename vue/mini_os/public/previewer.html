@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>左手win13-OFFICE预览器</title>
+    <!--  docx  -->
+    <script src="https://cdn.jsdelivr.net/npm/@js-preview/docx@1.6.0/lib/index.min.js"></script>
+    <link href="https://cdn.jsdelivr.net/npm/@js-preview/docx@1.6.0/lib/index.min.css" rel="stylesheet">
+    <!--  excel  -->
+    <script src="https://cdn.jsdelivr.net/npm/@js-preview/excel@1.6.0/lib/index.umd.min.js"></script>
+    <!--  pdf  -->
+    <script src="https://cdn.jsdelivr.net/npm/@js-preview/pdf@1.6.0/lib/index.min.js"></script>
+
+</head>
+<body>
+<div id="viewer"></div>
+<script>
+// 把url的查询参数解析
+function parseQueryString() {
+    var url = window.location.href
+    var obj = {};
+    var keyvalue = [];
+    var key = "",
+        value = "";
+    var paraString = url.substring(url.indexOf("?") + 1, url.length).split("&");
+    for (var i in paraString) {
+        keyvalue = paraString[i].split("=");
+        key = keyvalue[0];
+        value = keyvalue[1];
+        obj[key] = value;
+    }
+    return obj;
+}
+
+const params = parseQueryString()
+
+const fileUrl = params.file
+
+// 预览器容器
+var handler = null
+
+// 初始化docx预览器
+function initDocx(url) {
+    //初始化时指明要挂载的父元素Dom节点
+    const myDocxPreviewer = jsPreviewDocx.init(document.getElementById('viewer'));
+    //传递要预览的文件地址即可
+    myDocxPreviewer.preview(url).then(res=>{
+        console.log('预览完成');
+    }).catch(e=>{
+        console.log('预览失败', e);
+    })
+    handler = myDocxPreviewer
+
+}
+
+// 初始化excel预览器
+function initExcel(url) {
+    //初始化时指明要挂载的父元素Dom节点
+    const myExcelPreviewer = jsPreviewExcel.init(document.getElementById('viewer'));
+    //传递要预览的文件地址即可
+    myExcelPreviewer.preview(url).then(res=>{
+        console.log('预览完成');
+    }).catch(e=>{
+        console.log('预览失败', e);
+    })
+    handler = myExcelPreviewer
+}
+
+// 初始化pdf预览器
+function initPdf(url) {
+    //初始化时指明要挂载的父元素Dom节点
+    const myPdfPreviewer = jsPreviewPdf.init(document.getElementById('viewer'));
+    //传递要预览的文件地址即可
+    myPdfPreviewer.preview(url).then(res=>{
+        console.log('预览完成');
+    }).catch(e=>{
+        console.log('预览失败', e);
+    })
+    handler = myPdfPreviewer
+}
+
+const initMap = {
+    docx: initDocx,
+    xlsx: initExcel,
+    pdf: initPdf
+}
+
+// 解析文件后缀
+const fileExt = fileUrl.split('.').pop()
+// 初始化
+initMap[fileExt](fileUrl)
+
+</script>
+</body>
+</html>

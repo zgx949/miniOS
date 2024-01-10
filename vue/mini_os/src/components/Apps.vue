@@ -133,7 +133,8 @@ defineExpose({
 
 // 新增窗口调用
 const addWindow = (app) => {
-  openList.push(app)
+  // 头部插入
+  openList.unshift(app)
 }
 </script>
 
