@@ -15,4 +15,4 @@ export const getDownloadUrl = (id, filename) => {return `/api/file/download/${id
 
 export const getOpenUrl = (id) => {return `/api/file/open/${id}`}
 
-export const getPreviewUrl = (url) => {return `/viewer/?file=${url}`}
+export const getPreviewUrl = (url) => {return `/viewer/index.html?file=${url}`}
