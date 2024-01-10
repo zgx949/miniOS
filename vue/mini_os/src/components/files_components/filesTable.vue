@@ -113,7 +113,7 @@ const handleDownload = (index, row) => {
     message: '正在获取下载链接',
     type: 'info',
   })
-  window.open(getDownloadUrl(row.id))
+  window.open(getDownloadUrl(row.id, row.file_name))
   console.log(index, row)
 }
 

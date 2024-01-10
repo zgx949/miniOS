@@ -11,6 +11,6 @@ export const delFCB = (id) => request.post(`/api/file/delete`, {'id': id})
 
 export const upload = (data) => request.postForm(`/api/file/upload`, data)
 
-export const getDownloadUrl = (id) => {return `/api/file/download/${id}`}
+export const getDownloadUrl = (id, filename) => {return `/api/file/download/${id}/${filename}`}
 
 export const getOpenUrl = (id) => {return `/api/file/open/${id}`}

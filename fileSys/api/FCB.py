@@ -1,5 +1,6 @@
 import datetime
 import os
+import shutil
 
 from django.db import transaction
 from django.http import StreamingHttpResponse
@@ -155,9 +156,11 @@ def uploadFile(request):
 
 
 @require_http_methods(['GET'])
-def downloadFile(request, id):
+def downloadFile(request, id, filename):
     """
     下载文件 :GET /file/download/{ID}
+    :param id: FCB的id
+    :param filename: 自定义文件名，默认不处理
     :param request:
     :return:
     """
@@ -171,16 +174,25 @@ def downloadFile(request, id):
     iNodes = FileIndexNode.objects.filter(fcb=FCB)
 
     def readBlocks():
-        # 读取文件块
-        for iNode in iNodes:
+        # 复制第一个索引块
+        if len(iNodes) == 0:
+            return
+        # 读取剩下的文件块
+        for i in range(0, len(iNodes)):
+            iNode = iNodes[i]
             with open(f"./blocks/{iNode.path}", 'rb') as f:
                 yield f.read()
+        # 删除空文件
+        os.remove(f"./tempFile/{FCB.file_name}")
 
     # 返回文件流
-    # 设置文件响应头
     response = StreamingHttpResponse(readBlocks())
+    response['Content-Length'] = str(FCB.file_size)
+    # 设置返回头
     response['Content-Type'] = 'application/octet-stream'
-    response['Content-Disposition'] = f'attachment;filename="{FCB.file_name}"'
+    # response['Content-Disposition'] = f'attachment;filename="{FCB.file_name}"'
+    response['Content-Disposition'] = f'attachment; filename="{FCB.file_name}"; filename*=utf-8\'\'{FCB.file_name}'
+
     return response
 
 
