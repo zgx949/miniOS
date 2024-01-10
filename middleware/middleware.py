@@ -5,7 +5,8 @@ from common.utils import requestBody2Json
 from django.utils.deprecation import MiddlewareMixin
 
 # 配置白名单路由
-whiteListPath = ['/users/login', '/users/logout', '/users/register', '/admin/', '/admin']
+whiteListPath = ['/users/login', '/users/logout', '/users/register', '/admin/', '/admin', '/file/download/',
+                 '/file/open/']
 
 
 # 全局请求拦截中间件
