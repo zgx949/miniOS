@@ -83,14 +83,22 @@ WSGI_APPLICATION = 'pyOS.wsgi.application'
 #     }
 # }
 
+# 获取环境变量
+import os
+DB_HOST = os.getenv("DB_HOST", 'localhost')
+DB_USER = os.getenv("DB_USER", 'root')
+DB_PASSWORD = os.getenv("DB_PASSWORD", 'zgx949')
+DB_NAME = os.getenv("DB_NAME", 'minios')
+DB_PORT = os.getenv("DB_PORT", '3306')
+
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.mysql',
-        'HOST': 'localhost',
-        'USER': 'root',
-        'PASSWORD': 'zgx949',
-        'NAME': 'minios',
-        'PORT': '3306',
+        'HOST': DB_HOST,
+        'USER': DB_USER,
+        'PASSWORD': DB_PASSWORD,
+        'NAME': DB_NAME,
+        'PORT': DB_PORT,
         'OPTIONS': {
             "init_command": "SET sql_mode='STRICT_TRANS_TABLES'"
         }
