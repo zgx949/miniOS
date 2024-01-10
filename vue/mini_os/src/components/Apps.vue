@@ -138,6 +138,9 @@ const addWindow = (app) => {
 </script>
 
 <style>
+.desk {
+  height: 85vh;
+}
 .apps {
   margin-left: 1rem;
   display: flex;
