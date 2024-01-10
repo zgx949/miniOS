@@ -55,6 +55,29 @@ def installApp(request):
     return SuccessJsonMsg("安装成功")
 
 
+def uninstallApp(request):
+    """
+    卸载应用 :get /app/uninstall
+    :param request:
+    :return:
+    """
+    id = request.json_data.get('id')
+    # 检查APP是否存在
+    app = Apps.objects.get(id=id)
+    if not app:
+        return ErrorJsonMsg("应用不存在")
+    # 检查APP是否已经安装
+    user_id = request.user.id
+    user_apps = UserApps.objects.filter(user_id=user_id, app_id=id)
+    if not user_apps:
+        return ErrorJsonMsg("应用未安装")
+    # 卸载APP
+    user_apps.delete()
+
+    # 返回结果
+    return SuccessJsonMsg("卸载成功")
+
+
 @require_http_methods(['POST'])
 def createApp(request):
     """

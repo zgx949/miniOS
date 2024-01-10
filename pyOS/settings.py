@@ -12,6 +12,7 @@ https://docs.djangoproject.com/en/4.2/ref/settings/
 
 from pathlib import Path
 from dotenv import load_dotenv
+
 # 加载环境变量
 load_dotenv()
 import os
@@ -30,6 +31,11 @@ SECRET_KEY = 'django-insecure-59*onf6&+y8!u+!^h%1tbno^)vz9&gfpzv$zt6=g9c!u&r=22j
 DEBUG = os.environ.get("DEBUG", 'True')
 
 ALLOWED_HOSTS = ['*']
+
+# 添加下列内容
+CORS_ALLOWED_ORIGINS = ['http://school.lefthand.top']
+# 添加下列内容
+CSRF_TRUSTED_ORIGINS = ['http://school.lefthand.top']
 
 # Application definition
 

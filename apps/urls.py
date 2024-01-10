@@ -7,4 +7,5 @@ urlpatterns = [
     path('create', createApp),  # 创建应用
     path('market', listAppsMarket),  # 列出应用市场所有应用
     path('install', installApp),  # 安装应用
+    path('uninstall', uninstallApp),  # 卸载应用
 ]
