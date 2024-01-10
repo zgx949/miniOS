@@ -147,13 +147,17 @@ const addWindow = (app) => {
   display: flex;
   flex-wrap: wrap;
   align-content: stretch;
-  flex-direction: column;
-  /*  超过下边界自动换列,列不间隔(windows纵排列)*/
   overflow: auto;
-  height: 100%;
-  float: left;
-  column-gap: 0;
+  /*  超过下边界自动换列,列不间隔(windows纵排列)，pc端则 */
+  @media (min-width: 360px) {
+    flex-direction: column;
+
+    height: 100%;
+    float: left;
+    column-gap: 0;
+  }
 }
+
 
 .app {
 
