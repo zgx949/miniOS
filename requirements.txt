@@ -5,6 +5,7 @@ dnspython==2.4.2
 mysql==0.0.3
 mysqlclient==2.2.1
 PyMySQL==1.1.0
+python-dotenv==1.0.0
 sqlparse==0.4.4
 types-mysqlclient==2.2.0.1
 typing_extensions==4.9.0
