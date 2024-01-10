@@ -56,7 +56,7 @@ interface Props {
 const props = withDefaults(defineProps<Props>(), {
   modelValue: true,
   width: "500px",
-  height: "60vh",
+  height: "70vh",
   headHeight: "35px",
   headStyle: "",
   mainStyle: "",

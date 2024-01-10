@@ -58,7 +58,7 @@
 <script setup>
 import {defineEmits , defineProps, onMounted, ref, computed} from 'vue'
 import { bytesToSize } from "@/utils/utils";
-const emits = defineEmits(['openFolder', 'reload'])
+const emits = defineEmits(['openFolder', 'reload', "openFile"])
 import {ElNotification} from "element-plus";
 import {
   Folder,
@@ -130,13 +130,14 @@ const open = (row) => {
     emits('openFolder', row.id, row.file_name)
     return
   } else {
+    emits("openFile", row)
     // 打开文件
     ElNotification({
       title: '文件系统',
       message: `打开文件：${row.file_name}`,
       type: 'success',
     })
-    window.open(getOpenUrl(row.id))
+    // window.open(getOpenUrl(row.id))
   }
 
 

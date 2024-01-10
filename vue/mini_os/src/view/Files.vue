@@ -8,7 +8,7 @@
       <fileOperation @back="back" @create="create" :folderId="parentId.at(-1)" @reload="reload"></fileOperation>
 		</div>
 		<!-- 文件表格数据 -->
-    <filesTable :data="tableData" @openFolder="openFolder" @reload="reload" v-loading="loading"></filesTable>
+    <filesTable :data="tableData" @openFolder="openFolder" @reload="reload" v-loading="loading" @openFile="openFile"></filesTable>
 	</div>
 
 
@@ -18,9 +18,11 @@
 import fileOperation from '@/components/files_components/fileOperation.vue'
 import filesTable from '@/components/files_components/filesTable.vue'
 import {computed, ref, onMounted, watch, defineEmits} from 'vue'
-const emits = defineEmits(["loaded"])
+const emits = defineEmits(["loaded", "openFile"])
 import { ElNotification } from 'element-plus'
 import {createFCB, list} from "@/api/files";
+import {getOpenUrl} from "../api/files";
+import {getRootUrl} from "../utils/utils";
 const dialogFormVisible = ref(false)
 
 const pathArr = ref(['root'])
@@ -37,6 +39,20 @@ const openFolder = (id, dirName)=> {
   // 把当前目录名加入数组
   pathArr.value.push(dirName)
   loadData(parentId.value.at(-1))
+}
+
+const openFile = (file)=> {
+  // 发送打开文件消息，要求创建新的窗口 TODO: 可能要改成文件的下载地址，加入文件名
+  const fileURL = getRootUrl() + getOpenUrl(file.id)
+  emits('openFile', {
+    name: file.file_name,
+    img: '<svg t="1704633352014" class="icon" viewBox="0 0 1024 1024" version="1.1" xmlns="http://www.w3.org/2000/svg" p-id="9482" width="200" height="200"><path d="M512 512m-448 0a448 448 0 1 0 896 0 448 448 0 1 0-896 0Z" fill="#55A7F7" p-id="9483"></path><path d="M256 256m64 0l384 0q64 0 64 64l0 384q0 64-64 64l-384 0q-64 0-64-64l0-384q0-64 64-64Z" fill="#E2BF7A" p-id="9484"></path><path d="M332 302h360v420H332z" fill="#FFFFFF" p-id="9485"></path><path d="M322 342h380v360H322z" fill="#E9EBF1" p-id="9486"></path><path d="M302 382h420v300H302z" fill="#FFFFFF" p-id="9487"></path><path d="M282 422h460v300H282z" fill="#E9EBF1" p-id="9488"></path><path d="M768 412.192V704c0 35.346-28.654 64-64 64H320c-35.346 0-64-28.654-64-64V412.187a32 32 0 0 0 15.27 27.278C380.543 506.488 460.787 540 512 540c51.212 0 131.456-33.512 240.73-100.535A32 32 0 0 0 768 412.192z" fill="#FFD786" p-id="9489"></path><path d="M512 604m-32 0a32 32 0 1 0 64 0 32 32 0 1 0-64 0Z" fill="#CBA559" p-id="9490"></path></svg>',
+    url: `https://view.xdocin.com/view?src=${encodeURIComponent(fileURL)}`,
+    component: '',
+    width: '90%',
+    dialogVisible: true,
+    opened: true
+  })
 }
 
 const tableData = ref([

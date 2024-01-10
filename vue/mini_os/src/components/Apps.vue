@@ -21,7 +21,7 @@
             @load="onIframeLoad"
           />
       </div>
-      <Files v-else-if="app.component === 'Files'"></Files>
+      <Files v-else-if="app.component === 'Files'" @openFile="addWindow"></Files>
       <AppMarket v-else-if="app.component === 'AppMarket'" @reloadApps="loadData" />
     </Window>
   </div>
@@ -130,6 +130,11 @@ const show = (index) => {
 defineExpose({
   show
 })
+
+// 新增窗口调用
+const addWindow = (app) => {
+  openList.push(app)
+}
 </script>
 
 <style>
