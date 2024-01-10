@@ -96,7 +96,6 @@ const handleSubmit = () => {
 }
 
 onMounted(() => {
-  const token = localStorage.getItem('token')
   // 判断是否已登录
   const isLoggedIn = token !== null && token !== ''
   // 如果存在用户登录状态
