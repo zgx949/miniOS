@@ -182,8 +182,6 @@ def downloadFile(request, id, filename):
             iNode = iNodes[i]
             with open(f"./blocks/{iNode.path}", 'rb') as f:
                 yield f.read()
-        # 删除空文件
-        os.remove(f"./tempFile/{FCB.file_name}")
 
     # 返回文件流
     response = StreamingHttpResponse(readBlocks())

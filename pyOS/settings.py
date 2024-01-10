@@ -11,6 +11,10 @@ https://docs.djangoproject.com/en/4.2/ref/settings/
 """
 
 from pathlib import Path
+from dotenv import load_dotenv
+# 加载环境变量
+load_dotenv()
+import os
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -22,7 +26,8 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 SECRET_KEY = 'django-insecure-59*onf6&+y8!u+!^h%1tbno^)vz9&gfpzv$zt6=g9c!u&r=22j'
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
+
+DEBUG = os.environ.get("DEBUG", 'True')
 
 ALLOWED_HOSTS = ['*']
 
@@ -84,12 +89,12 @@ WSGI_APPLICATION = 'pyOS.wsgi.application'
 # }
 
 # 获取环境变量
-import os
-DB_HOST = os.getenv("DB_HOST", 'localhost')
-DB_USER = os.getenv("DB_USER", 'root')
-DB_PASSWORD = os.getenv("DB_PASSWORD", 'zgx949')
-DB_NAME = os.getenv("DB_NAME", 'minios')
-DB_PORT = os.getenv("DB_PORT", '3306')
+
+DB_HOST = os.environ.get("DB_HOST", 'localhost')
+DB_USER = os.environ.get("DB_USER", 'root')
+DB_PASSWORD = os.environ.get("DB_PASSWORD", 'zgx949')
+DB_NAME = os.environ.get("DB_NAME", 'minios')
+DB_PORT = os.environ.get("DB_PORT", '3306')
 
 DATABASES = {
     'default': {
