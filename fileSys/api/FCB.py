@@ -23,11 +23,13 @@ def createFCB(request):
     fileType = json_data.get('FileType')
     parentId = json_data.get('parentId')
     FileSize = json_data.get('FileSize', 0)
+    owner = request.user.id
     # 检查FCB是否存在
     query = FileControlBlock.objects.filter(
         file_name=fileName,
         file_type=fileType,
-        parent_id=parentId
+        parent_id=parentId,
+        owner=owner
     )
 
     if query.exists():
@@ -38,7 +40,8 @@ def createFCB(request):
         file_name=fileName,
         file_type=fileType,
         parent_id=parentId,
-        file_size=FileSize
+        file_size=FileSize,
+        owner=owner
     )
     # 返回结果
     return Response.SuccessJsonMsg(data=insertData)
@@ -52,6 +55,7 @@ def deleteFCB(request):
     :return:
     """
     delPaths = []
+    owner = request.user.id
     # 开启事务
     with transaction.atomic():
         # 删除FCB
@@ -61,12 +65,12 @@ def deleteFCB(request):
         # 广度优先删除
         while len(deleteList) > 0:
             # 查询子文件
-            query = FileControlBlock.objects.filter(parent_id=deleteList[0])
+            query = FileControlBlock.objects.filter(parent_id=deleteList[0], owner=owner)
             for item in query:
                 deleteList.append(item.id)
 
             # 查询出文件控制块
-            FCB = FileControlBlock.objects.filter(id=deleteList[0]).first()
+            FCB = FileControlBlock.objects.filter(id=deleteList[0], owner=owner).first()
             # 删除文件索引节点
             inodes = FileIndexNode.objects.filter(fcb=FCB)
             for inode in inodes:
@@ -97,16 +101,17 @@ def openFolder(request, id):
     :param request:
     :return:
     """
+    owner = request.user.id
     # 检查FCB是否存在
     if id == 'root':
         # 查询根目录
-        data = FileControlBlock.objects.filter(parent_id=None)
+        data = FileControlBlock.objects.filter(parent_id=None, owner=owner)
         return Response.SuccessJsonMsg(data=data)
 
     query = FileControlBlock.objects.filter(id=id)
     if query.exists():
         # 文件夹存在返回结果
-        data = FileControlBlock.objects.filter(parent_id=id)
+        data = FileControlBlock.objects.filter(parent_id=id, owner=owner)
         return Response.SuccessJsonMsg(data=data)
 
     # 返回结果
@@ -122,7 +127,7 @@ def uploadFile(request):
     """
     # 查询FCB
     FCBId = request.POST.get('FCBId')
-    FCB = FileControlBlock.objects.get(id=FCBId)
+    FCB = FileControlBlock.objects.get(id=FCBId, owner=request.user.id)
     if not FCB:
         return Response.ErrorJsonMsg(msg="文件FCB不存在")
 
