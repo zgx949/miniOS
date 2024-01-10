@@ -39,3 +39,11 @@ export async function buildChunkForm(fcbId, file, chunkNumber, chunkTotal, fileN
     form.append("md5", md5)
     return form
 }
+
+// 字节单位转为可读单位
+export function bytesToSize(bytes, precision = 2) {
+    let sizes = ['B', 'KB', 'MB', 'GB', 'TB'];
+    if (bytes == 0) return '0 B';
+    let i = parseInt(Math.floor(Math.log(bytes) / Math.log(1024)));
+    return Math.round((bytes / Math.pow(1024, i)), 2).toFixed(precision) + ' ' + sizes[i];
+}

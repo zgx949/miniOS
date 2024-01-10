@@ -33,7 +33,11 @@
         <el-tag v-else>文件</el-tag>
       </template>
     </el-table-column>
-    <el-table-column label="大小" prop="file_size"  width="100"/>
+    <el-table-column label="大小" prop="file_size"  width="100">
+        <template #default="scope">
+            {{ bytesToSize(scope.row.file_size) }}
+        </template>
+    </el-table-column>
     <el-table-column align="right">
       <template #header>
         <el-input v-model="search" placeholder="搜索文件(夹)" />
@@ -53,6 +57,7 @@
 
 <script setup>
 import {defineEmits , defineProps, onMounted, ref, computed} from 'vue'
+import { bytesToSize } from "@/utils/utils";
 const emits = defineEmits(['openFolder', 'reload'])
 import {ElNotification} from "element-plus";
 import {
