@@ -155,7 +155,10 @@ const fullScreen = () => {
   min-height: 200px;
   max-width: 100vw;
   max-height: 100vh;
-  background-color: #ecf5ff;
+  /*background-color: #ecf5ff;*/
+  background-color: rgba(0, 0, 0, 0.6); /* 这是一个半透明黑色 */
+  /*background-color: rgba(109,161,246, 0.7); !* 这是一个半透明黑色 *!*/
+
 }
 
 .drag-bar {
@@ -165,10 +168,13 @@ const fullScreen = () => {
   border-bottom: 1px solid #fff;
   box-sizing: border-box;
   padding: 1px 2px 9px;
-  background-color: #ecf5ff;
+  /*color: #ffffff;*/
+  /*background-color: #ecf5ff;*/
+  /*background-color: rgba(0, 0, 0, 0.5); !* 这是一个半透明黑色 *!*/
+
   border-bottom-color: #000000;
   /*text-align: center;*/
-  font-weight: 800;
+  font-weight: 500;
 }
 
 .drag-btn {

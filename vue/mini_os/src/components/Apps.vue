@@ -9,7 +9,8 @@
         @hide="hide(i)"
     >
       <template v-slot:head>
-        <span style="color: #000000; text-align: center">{{ app.name }}</span>
+          <span v-html="app.img"></span>
+          <span style="color: #ffffff; display: inline-block;vertical-align: middle;line-height: normal;height: 35px;">{{ app.name }}</span>
       </template>
       <div v-loading="loading" v-if="app.url !== ''">
         <iframe
@@ -147,25 +148,30 @@ const addWindow = (app) => {
   display: flex;
   flex-wrap: wrap;
   align-content: stretch;
+  /*flex-direction: row;*/
   overflow: auto;
-  /*  超过下边界自动换列,列不间隔(windows纵排列)，pc端则 */
-  @media (min-width: 360px) {
-    flex-direction: column;
 
-    height: 100%;
-    float: left;
-    column-gap: 0;
-  }
+  flex-direction: column;
+  height: 90%;
+  float: left;
+  column-gap: 0;
+  /*  超过下边界自动换列,列不间隔(windows纵排列)，pc端则 */
+  /*@media (min-width: 360px) {*/
+  /*  flex-direction: column;*/
+  /*  height: 100%;*/
+  /*  float: left;*/
+  /*  column-gap: 0;*/
+  /*}*/
 }
 
 
 .app {
 
   text-align: center;
-	border-radius: 30px;
-	transition: box-shadow 0.3s ease; /* 添加过渡效果 */
-  width: 100px;
-  height: 100px;
+	border-radius: 20px;
+	transition: box-shadow 0.5s ease; /* 添加过渡效果 */
+  width: 80px;
+  height: 80px;
   margin: 5px;
   float: left; /* 添加这一行 */
 
@@ -173,6 +179,8 @@ const addWindow = (app) => {
 
 .app:hover {
 	background-color: #f0f0f0; /* 设置app的背景颜色 */
+  background-color: rgba(255,255,255, 0.5); /* 这是一个半透明黑色 */
+
 	box-shadow: 0 20px 20px rgba(0, 0, 0, 0.1); /* 鼠标悬浮时添加阴影效果 */
 }
 .app:last-child {

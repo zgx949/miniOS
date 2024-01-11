@@ -1,5 +1,6 @@
 <template>
 	<el-drawer
+    class="el-drawer"
 		v-model="drawer"
 		title="I am the title"
 		:with-header="false"
@@ -16,7 +17,7 @@
 	<div class="main">
         <div class="bottom-nav">
       <div v-for="(app, i) in openList" class="nav-item">
-        <span @click="show(i)" v-html="app.img"></span>
+        <div class="icon" @click="show(i)" v-html="app.img"></div>
       </div>
     </div>
         <div class="bottom-nav">
@@ -48,7 +49,12 @@
             <svg t="1704509491387" class="icon" viewBox="0 0 1024 1024" version="1.1" xmlns="http://www.w3.org/2000/svg" p-id="9209" width="200" height="200"><path d="M509.1 1003.3c-239.9 0-435-195.1-435-435 0-109.3 40.7-213.8 114.6-294.2 21.7-23.6 46.1-44.9 72.2-63.1 20.4-14.2 48.5-9.1 62.6 11.3 14.2 20.4 9.1 48.5-11.3 62.6-20.8 14.5-40.1 31.3-57.4 50.1-58.6 63.8-90.8 146.6-90.8 233.3 0 190.2 154.8 345 345 345s345-154.8 345-345c0-88.3-33.3-172.3-93.8-236.5-16.5-17.5-34.8-33.3-54.4-46.9-20.4-14.2-25.4-42.2-11.3-62.6 14.2-20.4 42.2-25.5 62.6-11.3 24.7 17.2 47.8 37.1 68.5 59.1 76.3 81 118.3 186.9 118.3 298.2 0.2 239.9-194.9 435-434.8 435z" fill="#2081F6" p-id="9210"></path><path d="M509.1 13.3c-24.9 0-45 20.1-45 45v390c0 24.9 20.1 45 45 45s45-20.1 45-45v-390c0-24.8-20.1-45-45-45z" fill="#4C4F54" p-id="9211"></path></svg>
           </div>
         </div>
+
 	</div>
+
+<!--  <el-countdown class="time-bar" title="北京时间" format="YY:HH:mm:ss" :value="nowTime"/>-->
+
+
 
 </template>
 
@@ -75,7 +81,7 @@ const router = useRouter()
 const drawer = ref(false)
 const opts = ['info', 'start', 'setting']
 const opt = ref('')
-
+const nowTime = ref(Date.now() + 1000 * 60 * 60 * 7)
 //  退出登录
 const login_out = ()=> {
   localStorage.clear()
@@ -98,51 +104,55 @@ const show = (index) => {
 </script>
 
 <style>
-	.el-drawer {
-	  background-image: url("/bg-light.svg");
-	  background-size: cover;
+.icon {
+  width: 30px;
+  height: 30px;
+}
+.el-drawer {
+  background-image: url("/bg-light.svg");
+  background-size: cover;
 
-	}
-	.main {
-		display: flex;
-		justify-content: center;
-		align-items: center;
-    flex-wrap: wrap;
-	}
+}
+.main {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex-wrap: wrap;
+}
 
-	.bottom-nav {
-		display: flex;
-		justify-content: center;
-		background-color: aliceblue;
-		opacity: 0.9;
-		border-radius: 10px;
-    margin-right: 10px;
-    margin-top: 10px;
-    flex-wrap: wrap;
-    float: left;
-	}
+.bottom-nav {
+  display: flex;
+  justify-content: center;
+  background-color: aliceblue;
+  opacity: 0.9;
+  border-radius: 10px;
+  margin-right: 10px;
+  margin-top: 10px;
+  flex-wrap: wrap;
+  float: left;
+}
 
-	.nav-item {
-		padding: 5px;
-		margin: 5px;
-		transition: all 0.3s ease;
-		border-radius: 10px;
-	}
+.nav-item {
+  padding: 5px;
+  margin: 5px;
+  transition: all 0.3s ease;
+  border-radius: 10px;
+}
 
-	.nav-item:hover {
-		transform: scale(1.1) translate(-5px, -5px);
-		box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
-	}
+.nav-item:hover {
+  transform: scale(1.1) translate(-5px, -5px);
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+}
 
-	@keyframes scaleAndShadow {
-		from {
-			transform: scale(1) translate(-5px, -5px);
-			box-shadow: none;
-		}
+@keyframes scaleAndShadow {
+  from {
+    transform: scale(1) translate(-5px, -5px);
+    box-shadow: none;
+  }
 
-		to {
-			transform: scale(1.1) translate(-5px, -5px);
-			box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
-		}
-	}
+  to {
+    transform: scale(1.1) translate(-5px, -5px);
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+  }
+}
 </style>
