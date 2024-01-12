@@ -80,7 +80,7 @@ body {
   left: 0;
   width: 100%;
   height: 100%;
-  background-image: url('cxk.jpg'); /* 替换为你的图片URL */
+  background-image: url('/cxk.jpg'); /* 替换为你的图片URL */
   background-size: cover;
   opacity: 0.1; /* 调整这个值以改变透明度，0代表完全透明，1代表不透明 */
 }
