@@ -78,8 +78,8 @@ const install = (id) => {
       })
     }
     loadMarketApps()
+    emits("reloadApps")
   })
-  emits("reloadApps")
 }
 
 const uninstall = (id) => {
