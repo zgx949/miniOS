@@ -13,13 +13,13 @@
           <span v-html="app.img"></span>
           <span style="color: #ffffff; display: inline-block;vertical-align: middle;line-height: normal;height: 35px;">{{ app.name }}</span>
       </template>
-      <div v-loading="loading" v-if="app.url !== ''">
+      <div v-loading="loading" v-if="app.url !== ''" style="width: 100%;height: 100%">
         <iframe
             :src="app.url"
             ref="myIframe"
             frameborder="0"
             width="100%"
-            style="display: block; height: 100vh;"
+            style="display: block; height: 100%;"
             @load="onIframeLoad"
           />
       </div>
