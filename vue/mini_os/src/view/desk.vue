@@ -47,10 +47,11 @@ onMounted(() => {
 </script>
 
 <template>
-  <div class="header">
-    <h3>左手网盘-Windows13版</h3>
+  <div class="image-kun-layer">
   </div>
-
+  <div class="header">
+    <h3>Windows-Kun版</h3>
+  </div>
   <el-row :gutter="10">
     <el-col :xs="24" :sm="24" :md="24" :lg="24" :xl="24">
       <Apps @loaded="loaded" @openAppChange="openAppChange" ref="appsRef"></Apps>
@@ -72,6 +73,18 @@ body {
   background-image: url("/bg-light.svg");
   background-size: cover;
 }
+/* 坤层图片 */
+.image-kun-layer {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-image: url('cxk.jpg'); /* 替换为你的图片URL */
+  background-size: cover;
+  opacity: 0.1; /* 调整这个值以改变透明度，0代表完全透明，1代表不透明 */
+}
+
 .fixed-bottom {
   position: fixed;
   bottom: 0;
@@ -83,12 +96,13 @@ body {
 }
 
 .header {
-  height: 60px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  padding: 0 20px;
-  opacity: 0.8;
+  position: fixed;
+  top: 0;
+  /*left: 50%;*/
+  right: 0px;
+  padding: 10px;
+  /*transform: translateX(-50%);*/
+  opacity: 0.5;
 }
 
 .header h1 {

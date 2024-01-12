@@ -4,6 +4,7 @@
         v-if="app.opened"
         v-model:model-value="app.dialogVisible"
         :width="app.width"
+        :height="app.height"
         :key="i"
         @closeWindow="closeWindow(i)"
         @hide="hide(i)"
@@ -82,6 +83,10 @@ onMounted(() => {
       const item = apps.value[i]
       item['dialogVisible'] = false
       item['opened'] = false
+      // 是否有高度参数
+      if (!item.height) {
+        item['height'] = '70vh'
+      }
     }
     // 发送加载完成
     emits("loaded", true)
@@ -97,6 +102,7 @@ const apps = ref([
     url: '',
     component: 'Files',
     width: '100%',
+    height: '90%',
     dialogVisible: false,
     opened: false
   }
@@ -147,14 +153,16 @@ const addWindow = (app) => {
   margin-left: 1rem;
   display: flex;
   flex-wrap: wrap;
-  align-content: stretch;
+  align-content: baseline;
   /*flex-direction: row;*/
   overflow: auto;
-
   flex-direction: column;
-  height: 90%;
+  height: 100%;
+  width: 100%;
   float: left;
+  /* 不允许有列间隔*/
   column-gap: 0;
+
   /*  超过下边界自动换列,列不间隔(windows纵排列)，pc端则 */
   /*@media (min-width: 360px) {*/
   /*  flex-direction: column;*/
