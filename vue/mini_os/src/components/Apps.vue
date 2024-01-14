@@ -61,6 +61,7 @@ const openList = reactive([])
 watch(openList, ()=>{
   emits("openAppChange", openList)
 })
+
 // 计算浏览器高度
 const innerHeight = ref(300)
 
@@ -76,8 +77,24 @@ const loadData = async ()=> {
     }
   })
 }
+// 加载打开的应用列表
+const loadOpenList = ()=> {
+  let openListStr = localStorage.getItem('openList')
+  if (openListStr) {
+    const List = JSON.parse(openListStr)
+    for (let i = 0; i < List.length; i++) {
+      open(List[i])
+    }
+  }
+}
+const saveOpenList = ()=> {
+  localStorage.setItem('openList', JSON.stringify(openList))
+}
 
 onMounted(() => {
+  loadOpenList()
+  // 发送打开的应用列表
+  emits("openAppChange", openList)
   loadData().then(() => {
     for (let i = 0; i < apps.value.length; i++) {
       const item = apps.value[i]
@@ -115,12 +132,14 @@ const open = (app)=> {
   item['opened'] = true
   console.log('打开app',item)
   openList.push(item)
+  saveOpenList()
 }
 
 // 关闭窗口
 const closeWindow = (index) => {
   openList.splice(index, 1)
   loading.value = true
+  saveOpenList()
 }
 
 // 隐藏窗口
