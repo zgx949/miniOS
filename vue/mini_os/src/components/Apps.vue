@@ -86,6 +86,8 @@ const loadOpenList = ()=> {
       open(List[i])
     }
   }
+  // 发送打开的应用列表
+  emits("openAppChange", openList)
 }
 const saveOpenList = ()=> {
   localStorage.setItem('openList', JSON.stringify(openList))
@@ -93,8 +95,6 @@ const saveOpenList = ()=> {
 
 onMounted(() => {
   loadOpenList()
-  // 发送打开的应用列表
-  emits("openAppChange", openList)
   loadData().then(() => {
     for (let i = 0; i < apps.value.length; i++) {
       const item = apps.value[i]
