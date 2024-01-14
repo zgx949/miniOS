@@ -47,7 +47,7 @@
 import {ref, reactive, computed, watch, defineAsyncComponent, onMounted, defineEmits} from 'vue'
 const emits = defineEmits(["loaded", "openAppChange"])
 import Files from '@/view/Files.vue'
-import { listApp } from '@/api/apps'
+import {getopenlist, listApp, saveopenlist} from '@/api/apps'
 import Window from "@/components/window/window.vue";
 import AppMarket from "@/view/AppMarket.vue";
 
@@ -79,18 +79,28 @@ const loadData = async ()=> {
 }
 // 加载打开的应用列表
 const loadOpenList = ()=> {
-  let openListStr = localStorage.getItem('openList')
-  if (openListStr) {
-    const List = JSON.parse(openListStr)
-    for (let i = 0; i < List.length; i++) {
-      open(List[i])
+  // let openListStr = localStorage.getItem('openList')
+  // 从后台获取打开的应用列表
+  getopenlist().then(res => {
+    if (res.data.code === 0) {
+      const List = res.data.data
+      if (List) {
+        for (let i = 0; i < List.length; i++) {
+          open(List[i])
+        }
+      }
     }
-  }
-  // 发送打开的应用列表
-  emits("openAppChange", openList)
+    // 发送打开的应用列表
+    emits("openAppChange", openList)
+  })
 }
 const saveOpenList = ()=> {
-  localStorage.setItem('openList', JSON.stringify(openList))
+  // localStorage.setItem('openList', JSON.stringify(openList))
+  saveopenlist(openList).then(res => {
+    if (res.data.code === 0) {
+      console.log('保存成功')
+    }
+  })
 }
 
 onMounted(() => {

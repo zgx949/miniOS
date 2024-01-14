@@ -92,3 +92,36 @@ def createApp(request):
     # 返回结果
 
     pass
+
+
+@require_http_methods(['POST'])
+def saveOpenedAppList(request):
+    """
+    保存用户打开的APP列表 :POST /app/saveapplist
+    :param request:
+    :return:
+    """
+    # 保存数据
+    opened_data = UserOpenedApps.objects.filter(user_id=request.user.id)
+    if opened_data:
+        opened_data[0].json_data = json.dumps(request.json_data)
+        opened_data[0].save()
+    else:
+        user_opened_apps = UserOpenedApps(user_id=request.user.id, json_data=json.dumps(request.json_data))
+        user_opened_apps.save()
+    return SuccessJsonMsg("保存成功")
+
+
+@require_http_methods(['GET'])
+def getOpenedAppList(request):
+    """
+    获取用户打开的APP列表 :GET /app/getapplist
+    :param request:
+    :return:
+    """
+    # 获取数据
+    opened_data = UserOpenedApps.objects.filter(user_id=request.user.id)
+    if opened_data:
+        return SuccessJsonMsg("获取成功", json.loads(opened_data[0].json_data))
+    else:
+        return SuccessJsonMsg("获取成功", [])

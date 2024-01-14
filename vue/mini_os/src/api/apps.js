@@ -10,3 +10,7 @@ export const MarketApp = () => request.post(`/api/app/market`)
 export const InstallApp = (id) => request.post(`/api/app/install`, {id: id})
 
 export const UninstallApp = (id) => request.post(`/api/app/uninstall`, {id: id})
+
+export const saveopenlist = (data) => request.post(`/api/app/saveopenlist`, data)
+
+export const getopenlist = () => request.get(`/api/app/getopenlist`)
