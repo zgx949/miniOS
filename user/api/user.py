@@ -2,6 +2,7 @@ from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.models import User
 from django.views.decorators.http import require_http_methods
 
+import apps.models
 from apps.models import UserApps
 from common.response import ErrorJsonMsg, SuccessJsonMsg
 
@@ -32,6 +33,8 @@ def UserLogout(request):
     :return:
     """
     logout(request)
+    # 删除已打开的应用列表
+    apps.models.UserOpenedApps.objects.filter(user_id=request.user.id).delete()
     return SuccessJsonMsg("退出登录成功")
 
 
