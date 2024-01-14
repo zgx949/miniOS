@@ -6,16 +6,17 @@ import { ElNotification, ElLoading } from "element-plus";
 // 加载完成
 const loaded = () => {
   loading.close()
+  // 计算开机时间
   ElNotification({
     title: '系统提示',
-    message: `本次开机用时：${startTime}ms`,
-    type: 'success',
+    message: `开机时间：${(performance.now() - startTime).toFixed(2)}ms`,
+    type: 'success'
   })
+
 }
 const openList = ref(null)
 var loading = null
-var startTime = 0
-var timer = null
+var startTime = performance.now()
 
 onBeforeMount(() => {
   loading = ElLoading.service({
@@ -23,9 +24,6 @@ onBeforeMount(() => {
     text: '正在加载APP',
     background: 'rgba(0, 0, 0, 0.7)',
   })
-  timer = setInterval(() => {
-    startTime++
-  }, 1)
 })
 
 // 打开的应用发生变化
