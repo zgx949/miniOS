@@ -19,7 +19,7 @@ def parse_inode(inode: FileIndexNode):
     """
 
     # 获取引擎协议
-    protocol, path = inode.path.split('://')[0]
+    protocol, path = inode.path.split('://')
 
     engine = protocolMAP.get(protocol, None)
     if engine is None:

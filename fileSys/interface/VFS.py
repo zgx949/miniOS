@@ -75,7 +75,9 @@ class VFS:
         iNodes = FileIndexNode.objects.filter(fcb=FCB)
         for inode in iNodes:
             physical_inode = parse_inode(inode)
-            physical_inode.read()
+            # 生产出文件流
+            for chunk in physical_inode.read():
+                yield chunk
 
     def seek(self, offset: int, mode: str = 'r') -> bool:
         """

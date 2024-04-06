@@ -1,3 +1,4 @@
+import logging
 import os
 
 from fileSys.interface.InodeInterface import InodeInterface
@@ -15,11 +16,12 @@ class LocalDisk(InodeInterface):
             return False
 
     def read(self, size: int = -1) -> bytes:
-        with open(f"./blocks/{self.iNode.path}", 'rb') as f:
+        with open(f"./{self.iNode.path}", 'rb') as f:
+            logging.info("正在读取文件块: %s", self.iNode.path)
             yield f.read()
 
     def write(self, block) -> bool:
-        with open(f"./blocks/{self.iNode.path}", 'wb') as f:
+        with open(f"./{self.iNode.path}", 'wb') as f:
             for chunk in block.chunks():
                 f.write(chunk)
         return True

@@ -69,7 +69,7 @@ def uploadFile(request):
     :param request:
     :return:
     """
-    # 查询FCB
+    # 查询所在目录的FCB
     FCBId = request.POST.get('FCBId')
     owner = request.user.id
 
