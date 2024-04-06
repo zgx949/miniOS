@@ -1,10 +1,10 @@
-import os
 import time
 
-from common.utils import getFileMd5
-from fileSys.interface.InodeInterface import InodeInterface
-from fileSys.models import FileControlBlock, FileIndexNode
 from django.db import transaction
+
+from common.utils import getFileMd5
+from fileSys.interface.enginesRegister import parse_inode
+from fileSys.models import FileControlBlock, FileIndexNode
 
 
 class VFS:
@@ -37,7 +37,7 @@ class VFS:
         return VFS.create(fileName, 'folder', parentId, FileSize, owner)
 
     @staticmethod
-    def listdir(id: str, owner: int) -> (list | str, bool):
+    def listdir(id: str, owner: int) -> (list, bool):
         """
         抽象方法，列出指定目录下的文件和子目录列表。
         :param id: 目录路径的fcb id
@@ -74,7 +74,7 @@ class VFS:
         # 查询所有iNode节点
         iNodes = FileIndexNode.objects.filter(fcb=FCB)
         for inode in iNodes:
-            physical_inode = InodeInterface.parse_inode(inode)
+            physical_inode = parse_inode(inode)
             physical_inode.read()
 
     def seek(self, offset: int, mode: str = 'r') -> bool:
@@ -151,7 +151,7 @@ class VFS:
                 # 查询出文件索引节点
                 inodes = FileIndexNode.objects.filter(fcb=FCB)
                 for inode in inodes:
-                    physical_inode = InodeInterface.parse_inode(inode)  # 解析为实际索引节点
+                    physical_inode = parse_inode(inode)  # 解析为实际索引节点
                     if physical_inode.exists():  # 索引块存在
                         # 加入删除队列, 把函数指针传入，后面再统一删除
                         delete_methods.append(physical_inode.delete)
@@ -195,7 +195,7 @@ class VFS:
         )
 
         # 新建一个物理节点
-        physical_inode = InodeInterface.parse_inode(iNode)
+        physical_inode = parse_inode(iNode)
         physical_inode.write(block)
 
         return iNode
