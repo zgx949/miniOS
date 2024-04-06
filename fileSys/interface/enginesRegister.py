@@ -17,7 +17,13 @@ def parse_inode(inode: FileIndexNode):
     :param inode:
     :return:
     """
+    if "://" not in inode.path:
+        # 旧版本无协议头，新版本兼容，并做出版本升级；默认本地存储
+        if 'blocks' not in inode.path:
+            inode.path = 'blocks' + inode.path
 
+        inode.path = 'localdisk://' + inode.path
+        inode.save()
     # 获取引擎协议
     protocol, path = inode.path.split('://')
 
