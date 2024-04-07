@@ -96,9 +96,9 @@ WSGI_APPLICATION = 'pyOS.wsgi.application'
 
 # 获取环境变量
 
-DB_HOST = os.environ.get("DB_HOST", 'localhost')
+DB_HOST = os.environ.get("DB_HOST", 'minios-mysql-dev')
 DB_USER = os.environ.get("DB_USER", 'root')
-DB_PASSWORD = os.environ.get("DB_PASSWORD", 'zgx949')
+DB_PASSWORD = os.environ.get("DB_PASSWORD", 'minios')
 DB_NAME = os.environ.get("DB_NAME", 'minios')
 DB_PORT = os.environ.get("DB_PORT", '3306')
 

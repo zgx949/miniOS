@@ -1,11 +1,19 @@
+# 构建通信网络
+.PHONY: check-minios-network
+check-minios-network:
+ifeq ($(shell docker network inspect minios_network 2>/dev/null | grep Name),)
+	docker network create minios_network
+endif
 # 测试环境部署，前后端数据库都运行
 dev:
-	# 构建通信网络
-	docker network create minios_network
-
+	# 检查内网是否构建
+	@if [ -z "$$(docker network inspect minios_network 2>/dev/null)" ]; then \
+        docker network create minios_network; \
+    fi
 	# 构建mysql环境
-	docker build -t minios-mysql-dev .
+	docker build -t minios-mysql-dev ./mysql
 	docker run -p 3306:3306 --name minios-mysql -d --network=minios_network minios-mysql-dev
+
 	# 运行后端
 	docker build -t minios-django-dev .
 	docker run -p 8000:8000 --name minios-django -d --network=minios_network minios-django-dev
@@ -29,7 +37,7 @@ run-frontend:
 # 只运行mysql
 run-mysql:
 	# 构建mysql环境
-	docker build -t minios-mysql-dev ./mysql
+	#docker build -t minios-mysql-dev ./mysql
 	docker run -p 3306:3306 --name minios-mysql -d --network=minios_network minios-mysql-dev
 
 # 一键部署生产环境
