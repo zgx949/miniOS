@@ -11,7 +11,7 @@ ENV TZ=Asia/Shanghai
 RUN ln -snf /usr/share/zoneinfo/$TZ /etc/localtime && echo $TZ > /etc/timezone
 
 # 拷贝自定义的MySQL配置文件到容器中
-COPY my.cnf /etc/mysql/conf.d/my.cnf
+#COPY my.cnf /etc/mysql/conf.d/my.cnf
 
 # 初始化MySQL数据目录权限和用户账户
 RUN chown -R mysql:mysql /var/lib/mysql && \
