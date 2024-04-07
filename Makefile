@@ -4,7 +4,8 @@ dev:
 	docker network create minios_network
 
 	# 构建mysql环境
-
+	docker build -t minios-mysql-dev .
+	docker run -p 3306:3306 --name minios-mysql -d --network=minios_network minios-mysql-dev
 	# 运行后端
 	docker build -t minios-django-dev .
 	docker run -p 8000:8000 --name minios-django -d --network=minios_network minios-django-dev
@@ -24,6 +25,12 @@ run-frontend:
 	#docker build -t minios-vue-dev ./vue/mini_os/
 	docker run -p 3000:3000 --name minios-vue-dev -d --network=minios_network minios-vue-dev
 	echo "前端启动地址：http://localhost:3000"
+
+# 只运行mysql
+run-mysql:
+	# 构建mysql环境
+	docker build -t minios-mysql-dev ./mysql
+	docker run -p 3306:3306 --name minios-mysql -d --network=minios_network minios-mysql-dev
 
 # 一键部署生产环境
 prod:
