@@ -1,7 +1,17 @@
 import { defineConfig } from 'vite'
 import vue from '@vitejs/plugin-vue'
 import { resolve } from 'path';
-const baseUrl = "http://localhost:8000"
+
+const getEnvVarOrDefault = (key, defaultValue) => {
+  const value = process.env[key];
+  if (!value) {
+    return defaultValue;
+  }
+  return value;
+};
+
+// const baseUrl = "http://localhost:8000"
+const baseUrl = getEnvVarOrDefault("baseUrl", "http://localhost:8000")
 
 // https://vitejs.dev/config/
 export default defineConfig({
