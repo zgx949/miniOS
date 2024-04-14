@@ -1,0 +1,52 @@
+version: '3.8'
+
+services:
+  db:
+    image: mysql:8.0
+    command: --default-authentication-plugin=mysql_native_password
+    restart: always
+    environment:
+      MYSQL_ROOT_PASSWORD: minios
+      MYSQL_DATABASE: minios
+      MYSQL_USER: minios
+      MYSQL_PASSWORD: minios
+    volumes:
+      - db_data:/var/lib/mysql
+    networks:
+      - minios_network
+
+  django:
+    build: ./
+#    command: bash -c "python manage.py makemigrations && python manage.py migrate && gunicorn django_project.wsgi:application -b 0.0.0.0:8000"
+    command: bash -c "python manage.py makemigrations && python manage.py migrate && python manage.py runserver 0.0.0.0:8000"
+    volumes:
+      - ./:/app
+      - static_volume:/app/static
+    ports:
+      - "8000:8000"
+    env_file:
+      - ./.env
+    depends_on:
+      - db
+    networks:
+      - minios_network
+
+  vite:
+    build: ./vue/mini_os
+    command: yarn dev --port 3000
+    volumes:
+      - ./frontend:/app
+      - /app/node_modules
+    ports:
+      - "3000:3000"
+    depends_on:
+      - django
+    networks:
+      - minios_network
+
+volumes:
+  db_data:
+  static_volume:
+
+networks:
+  minios_network:
