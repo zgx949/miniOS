@@ -26,8 +26,6 @@ def createFCB(request):
     FileSize = json_data.get('FileSize', 0)
     owner = request.user.id
 
-    VFS.exists(fileName, fileType, parentId, FileSize)
-
     if VFS.exists(fileName, fileType, parentId, FileSize):
         # FCB存在返回结果
         return Response.ErrorJsonMsg(msg="FCB已存在")
