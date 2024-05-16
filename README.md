@@ -6,7 +6,12 @@
 
 ## 如何启动
 1. [体验地址](https://win.lefthand.top)
-2. docker-compose
+2. docker-compose一键启动并部署
+```shell
+docker-compose up -d
+```
+> docker-compose启动后访问http://localhost
+
 3. 先启动Django后启动Vue
 ## 技术栈
 
@@ -18,6 +23,12 @@
 - [ ] FTP/SFTP/WebDAV客户端库：实现与各种网络文件系统的连接与通信。
 - [x] VFS实现库（如PyFilesystem2）：提供抽象的文件系统接口，便于集成各类文件系统。
 
+支持的文件系统
+- [x] localdisk
+- [ ] baidu网盘
+- [ ] FTP
+- [ ] 阿里网盘
+- [ ] ...
 ### 前端
 - [x] **Vue.js**: 用于构建响应式、组件化的用户界面，实现文件浏览、编辑、上传、下载等功能。
 - [ ] **Vuex**: 管理前端状态，同步与文件操作相关的数据。
