@@ -42,4 +42,5 @@ run-mysql:
 
 # 一键部署生产环境
 prod:
-	echo "前端启动地址：http://localhost:3000"
+	docker-compose up -d
+	echo "前端启动地址：http://localhost"
