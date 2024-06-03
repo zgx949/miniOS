@@ -16,4 +16,4 @@ export const getDownloadUrl = (id, filename) => {return `/api/file/download/${id
 export const getOpenUrl = (id) => {return `/api/file/open/${id}`}
 
 // export const getPreviewUrl = (url) => {return `/viewer/index.html?file=${url}`}
-export const getPreviewUrl = (url) => {return `https://view.xdocin.com/view?src=${url}`}
+export const getPreviewUrl = (url) => {return `https://view.officeapps.live.com/op/view.aspx?src=${url}`}
