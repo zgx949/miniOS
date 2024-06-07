@@ -13,14 +13,14 @@
           <span v-html="app.img"></span>
           <span style="color: #ffffff; display: inline-block;vertical-align: middle;line-height: normal;height: 35px;">{{ app.name }}</span>
       </template>
-      <div v-loading="loading" v-if="app.url !== ''" style="width: 100%;height: 100%">
+      <div v-loading="app.loading" v-if="app.url !== ''" style="width: 100%;height: 100%">
         <iframe
             :src="app.url"
             ref="myIframe"
             frameborder="0"
             width="100%"
             style="display: block; height: 100%;"
-            @load="onIframeLoad"
+            @load="onIframeLoad(app)"
           />
       </div>
       <Files v-else-if="app.component === 'Files'" @openFile="addWindow"></Files>
@@ -36,9 +36,6 @@
               <div class="name">{{ item.name }}</div>
             </div>
     </div>
-<!--    <div v-for="(app, i) in openList">-->
-<!--      <button @click="show(i)">{{app.name}}</button>-->
-<!--    </div>-->
   </div>
 
 </template>
@@ -52,7 +49,6 @@ import Window from "@/components/window/window.vue";
 import AppMarket from "@/view/AppMarket.vue";
 
 const myIframe = ref(null)
-const loading = ref(true) // 用于记录 iframe 是否已加载完成
 const component = ref('Files')
 // 已打开的应用列表
 const openList = reactive([])
@@ -65,8 +61,13 @@ watch(openList, ()=>{
 // 计算浏览器高度
 const innerHeight = ref(300)
 
-const onIframeLoad = ()=> {
-  loading.value = false // iframe 加载完成，将状态设置为 true
+const onIframeLoad = (app)=> {
+  for (let i = 0; i < openList.length; i++) {
+    if (app === openList[i]) {
+      openList[i].loading = false
+    }
+  }
+  // loading.value = false // iframe 加载完成，将状态设置为 true
 }
 
 // 加载数据
@@ -79,7 +80,6 @@ const loadData = async ()=> {
 }
 // 加载打开的应用列表
 const loadOpenList = ()=> {
-  // let openListStr = localStorage.getItem('openList')
   // 从后台获取打开的应用列表
   getopenlist().then(res => {
     if (res.data.code === 0) {
@@ -110,6 +110,7 @@ onMounted(() => {
       const item = apps.value[i]
       item['dialogVisible'] = false
       item['opened'] = false
+      item['loading'] = true
       // 是否有高度参数
       if (!item.height) {
         item['height'] = '70vh'
@@ -131,7 +132,8 @@ const apps = ref([
     width: '100%',
     height: '90%',
     dialogVisible: false,
-    opened: false
+    opened: false,
+    loading: false
   }
 ])
 
@@ -140,6 +142,7 @@ const open = (app)=> {
   let item = app
   item['dialogVisible'] = true
   item['opened'] = true
+  item['loading'] = true
   console.log('打开app',item)
   openList.push(item)
   saveOpenList()
@@ -148,7 +151,6 @@ const open = (app)=> {
 // 关闭窗口
 const closeWindow = (index) => {
   openList.splice(index, 1)
-  loading.value = true
   saveOpenList()
 }
 
@@ -191,14 +193,6 @@ const addWindow = (app) => {
   float: left;
   /* 不允许有列间隔*/
   column-gap: 0;
-
-  /*  超过下边界自动换列,列不间隔(windows纵排列)，pc端则 */
-  /*@media (min-width: 360px) {*/
-  /*  flex-direction: column;*/
-  /*  height: 100%;*/
-  /*  float: left;*/
-  /*  column-gap: 0;*/
-  /*}*/
 }
 
 
@@ -210,8 +204,7 @@ const addWindow = (app) => {
   width: 80px;
   height: 80px;
   margin: 5px;
-  float: left; /* 添加这一行 */
-
+  float: left;
 }
 
 .app:hover {
