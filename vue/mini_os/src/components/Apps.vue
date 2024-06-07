@@ -139,7 +139,7 @@ const apps = ref([
 
 // 打开窗口
 const open = (app)=> {
-  let item = app
+  let item = JSON.parse(JSON.stringify(app)) // 深拷贝
   item['dialogVisible'] = true
   item['opened'] = true
   item['loading'] = true
