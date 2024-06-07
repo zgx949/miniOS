@@ -1,6 +1,6 @@
 import { App } from "vue";
 // import bus from "@/plugins/bus";
-
+var zIndex = 0
 const directives = {
     drag: {
         mounted(el: any, binding: any, vnode: any) {
@@ -8,10 +8,12 @@ const directives = {
             if (!binding.value && (binding.value ?? "") !== "") return;
             // 拖拽实现
             const odiv = el.parentNode;
-
+            zIndex++
+            odiv.style.zIndex = zIndex; //当前拖拽的在最前面显示
             // // 配置移动端拖拽
             el.ontouchstart = (e: any) => {
-                odiv.style.zIndex = 1; //当前拖拽的在最前面显示
+                zIndex++
+                odiv.style.zIndex = zIndex; //当前拖拽的在最前面显示
                 const disX = e.touches[0].clientX - odiv.offsetLeft;
                 const disY = e.touches[0].clientY - odiv.offsetTop;
                 const clientWidth = document.documentElement.clientWidth; //页面的宽
@@ -34,6 +36,8 @@ const directives = {
                     odiv.style.marginTop = 0;
                 };
                 document.ontouchend = () => {
+                    zIndex++
+                    odiv.style.zIndex = zIndex; //当前拖拽的在最前面显示
                     document.ontouchmove = null;
                 };
             };
@@ -41,8 +45,9 @@ const directives = {
 
             // 配置PC端拖拽
             el.onmousedown = (eve: any) => {
+                zIndex++
+                odiv.style.zIndex = zIndex; //当前拖拽的在最前面显示
                 // bus.emit("showDrag", 0); //按下的时候发送事件 让其余窗体恢复层级
-                odiv.style.zIndex = 1; //当前拖拽的在最前面显示
                 eve = eve || window.event;
                 const mx = eve.pageX; //鼠标点击时的坐标
                 const my = eve.pageY; //鼠标点击时的坐标
