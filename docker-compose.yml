@@ -14,12 +14,13 @@ services:
       MYSQL_USER: minios
       MYSQL_PASSWORD: minios
     volumes:
-      - db_data:/var/lib/mysql
+      - ./mysql:/docker-entrypoint-initdb.d
     networks:
       - minios_network
 
   django:
     container_name: "pyos-django"
+    restart: on-failure
     build: ./
     command: bash -c "python manage.py makemigrations && python manage.py migrate && python manage.py runserver 0.0.0.0:8000"
     volumes:
