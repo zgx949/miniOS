@@ -83,7 +83,7 @@ const handleSubmit = () => {
         type: 'success',
       })
       router.push({ name: 'Desk' })
-
+      location.href = './desk'
     } else {
       // 登录失败
       ElNotification({
