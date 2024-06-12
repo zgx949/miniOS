@@ -11,7 +11,7 @@ COPY . .
 RUN yarn install
 
 # 构建内网后端的通信接口地址环境变量，默认地址为docker内网
-ENV baseUrl http://minios-django:8000
+ENV baseUrl http://pyos-django:8000
 
 # 执行 Vite 构建命令，生成 dist 目录
 RUN yarn build
@@ -21,7 +21,8 @@ FROM nginx:latest
 #
 ## 将 Vite 项目的 dist 目录复制到 Nginx 的默认静态文件目录
 COPY --from=build-stage /app/dist /usr/share/nginx/html
-#
+# 将nginx配置文件全部复制到容器中
+ADD ./nginx/default.conf /etc/nginx/conf.d/default.conf
 ## 暴露容器的 80 端口
 EXPOSE 80
 #

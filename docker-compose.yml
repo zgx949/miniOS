@@ -45,12 +45,12 @@ services:
     build:
       context: ./vue/mini_os
       dockerfile: ./Dockerfile
-    volumes:
-      - ./nginx/default.conf:/etc/nginx/conf.d/default.conf
+#    volumes:
+#      - ./nginx/default.conf:/etc/nginx/conf.d/default.conf
     ports:
       - "3000:80"
-#    depends_on:
-#      - django
+    depends_on:
+      - django
     networks:
       - minios_network
 
