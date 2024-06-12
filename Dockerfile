@@ -22,7 +22,8 @@ RUN pip install --upgrade pip
 
 RUN pip install -r requirements.txt
 
+RUN chmod 777 django-run.sh
 
-CMD ["python3", "manage.py", "runserver", "0.0.0.0:8000"]
+CMD "./django-run.sh"
 
 EXPOSE 8000
