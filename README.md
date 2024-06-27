@@ -13,6 +13,8 @@ docker-compose up -d
 > docker-compose启动后访问http://localhost
 
 3. 先启动Django后启动Vue
+4. docker-compose架构
+![img.png](docker-compose.png)
 ## 技术栈
 
 ### 后端
