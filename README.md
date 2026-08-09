@@ -1,3 +1,5 @@
+
+
 # MiniOS-WindowsKun：整合网络文件系统与自定义VFS
 
 ## 项目概述
@@ -10,7 +12,7 @@
 ```shell
 docker-compose up -d
 ```
-> docker-compose启动后访问http://localhost
+> docker-compose启动后访问 http://localhost:3000
 
 3. 先启动Django后启动Vue
 4. docker-compose架构
